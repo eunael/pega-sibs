@@ -5,6 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pega Sílabas</title>
     <style>
+        div#controles{
+            background: rgba(214, 214, 214, 0.1);
+            border-radius: 2px;
+            box-shadow: rgba(0, 0, 0, 0.2) 0 .125rem .25rem;
+            display: block;
+            width: 200px;
+            height: 200px;
+            overflow-y: auto;
+        }
+        .rodando{
+            display: flex;
+            justify-content: space-between;
+            height: 50px;
+        }
+        .rodando span#start{
+            display: block;
+            float: right;
+            text-align: center;
+            font: normal normal 24pt Arial;
+            box-shadow: rgba(0, 0, 0, 0.2) 0 .125rem .25rem;
+            width: 46px;
+            height: 46px;
+            margin-right: 10px;
+            margin-top: 4px;
+            border-radius: 50%;
+        }
+        .rodando span#direc{
+            display: block;
+            font: normal bold 16pt 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            padding-top: 11px;
+            padding-left: 10px;
+        }
+        #lista{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            max-width: 150px;
+            margin: 0px auto;
+            padding: 10px;
+            overflow-y: auto;
+            list-style: none;
+        }
+        #lista li{
+            background: #40e348a8;
+            display: block;
+            margin-bottom: 10px;
+            border-radius: 13px;
+            text-align: center;
+            width: 40px;
+            height: 20px;
+        }
+        label{
+            font-weight: bold;
+        }
         canvas {
             position: absolute;
 			top: 0px;
@@ -16,6 +70,16 @@
     </style>
 </head>
 <body>
+    <div id="controles">
+        <div class="rodando">
+            <span id="direc">Direções</span>
+            <span id="start">&#10025;</span>
+        </div>
+        <div class="direcoes">
+            <ul id="lista"></ul>
+        </div>
+        
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

@@ -25,27 +25,63 @@ var bloco = {
 }
 
 
-
+let lista
+function mudaCorDiv(cor){
+    let start = document.querySelector('#start')
+    start.style.background = cor
+    
+}
+function delDirecao(num){
+    lista = document.querySelector('#lista')
+    let itens = lista.childNodes
+    if(num == -1){
+        let ind = itens.length-1
+        lista.removeChild(lista.childNodes[ind])
+    } else if(num == 0){
+        lista.removeChild(lista.childNodes[0])
+    }
+    
+}
+function addDirecao(simb){
+    lista = document.querySelector('#lista')
+    if (simb === "back"){
+        delDirecao(-1)
+    } else if(simb === "enter"){
+        mudaCorDiv("#40e347ce")
+    }else{
+        let item = document.createElement('li')
+        let label = document.createElement('label')
+        label.innerHTML = simb
+        item.appendChild(label)
+        lista.appendChild(item)
+    }
+    
+}
 
 function mover(tecla){
     if (tecla==13){
         // ENTER
+        addDirecao("enter")
         bloco.moveBloco(0,0)
     } else if(tecla==37){
         // setinha para ESQUERDA: 37
         // letra A: tecla==97 || tecla==65
+        addDirecao("&larr;")
         bloco.moveBloco(-somaBloco,0)
     } else if(tecla==38){
         // setinha para CIMA: 38
         // letra W: tecla==119 || tecla==87
+        addDirecao("&uarr;")
         bloco.moveBloco(0,-somaBloco)
     } else if(tecla==39){
         // setinha para DIREITA: 39
         // letra D: tecla==100 ||tecla==68
+        addDirecao("&rarr;")
         bloco.moveBloco(somaBloco,0)
     } else if(tecla==40){
         // setinha para BAIXO: 40
         // letra S: tecla==115 || tecla==83
+        addDirecao("&darr;")
         bloco.moveBloco(0,somaBloco)	
     }
 }
