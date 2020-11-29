@@ -14,6 +14,7 @@ var bloco = {
     movimentos: [], /* qnd clicar enter, vai chamar a função moveBloco() e os elementos dentro de comandos vão
     compôr as coordenadas q o bloco vai percorrer pelo canvas. movimentos vai guardar coordenadas  junto com
     a inicial da direção q o bloco vai (d, e, c, b) */
+    estadoBloco: false, // vai indicar o estado do bloco, se ele está andando (true) ou parado (false)
 
     atualizaBloco: function(){
         // atualizaBloco vai atualizar a posição do bloco a cada movimento executado antes do bloco ser desenhado novamente
@@ -21,6 +22,7 @@ var bloco = {
         /* -------------- VALIDAÇÕES -------------- */
         if(this.movimentos.length != 0){
             // se ainda tiver algum movimento dentro de this.movimentos para ser executado:
+            this.estadoBloco = true
             if(this.movimentos[0][2]==="d"){
                 // se for para direita:
                 if(this.x == this.movimentos[0][0]){
@@ -59,6 +61,7 @@ var bloco = {
             }
         } else{
             // qnd os movimentos acabarem, a estrelinha volta a ficar branca
+            this.estadoBloco = false
             mudaCorDiv("white")
         }
     },
@@ -165,35 +168,39 @@ function addDirecao(simb){
 
 function mover(tecla){
     // essa função identificar qual seta do teclado foi clicada e faz as condições
-    let seta
-    if(tecla==37){
-        // setinha para ESQUERDA: 37
-        // letra A: tecla==97 || tecla==65
-        comandos.push([-60, 0, "e"])
-        addDirecao("&larr;")
-    } else if(tecla==38){
-        // setinha para CIMA: 38
-        // letra W: tecla==119 || tecla==87
-        comandos.push([0, -60, "c"])
-        addDirecao("&uarr;")
-    } else if(tecla==39){
-        // setinha para DIREITA: 39
-        // letra D: tecla==100 ||tecla==68
-        comandos.push([60, 0, "d"])
-        addDirecao("&rarr;")
-    } else if(tecla==40){
-        // setinha para BAIXO: 40
-        // letra S: tecla==115 || tecla==83
-        comandos.push([0, 60, "b"])
-        addDirecao("&darr;")
-    } else if(tecla==13){
-        // enter: 13
-        bloco.moveBloco()
-        addDirecao("enter")
-    } else if(tecla==8){
-        // enter: 13
-        comandos.pop()
-        addDirecao("back")
+    let estBloco = bloco.estadoBloco
+    if(!estBloco){
+        if(tecla==37){
+            // setinha para ESQUERDA: 37
+            // letra A: tecla==97 || tecla==65
+            comandos.push([-60, 0, "e"])
+            addDirecao("&larr;")
+        } else if(tecla==38){
+            // setinha para CIMA: 38
+            // letra W: tecla==119 || tecla==87
+            comandos.push([0, -60, "c"])
+            addDirecao("&uarr;")
+        } else if(tecla==39){
+            // setinha para DIREITA: 39
+            // letra D: tecla==100 ||tecla==68
+            comandos.push([60, 0, "d"])
+            addDirecao("&rarr;")
+        } else if(tecla==40){
+            // setinha para BAIXO: 40
+            // letra S: tecla==115 || tecla==83
+            comandos.push([0, 60, "b"])
+            addDirecao("&darr;")
+        } else if(tecla==13){
+            // enter: 13
+            bloco.moveBloco()
+            addDirecao("enter")
+        } else if(tecla==8){
+            // enter: 13
+            comandos.pop()
+            addDirecao("back")
+        }
+    } else {
+        // console.log('o bloco tá andando, calma')
     }
 }
 
