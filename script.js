@@ -1,16 +1,16 @@
 let canvas, ctx; // essas variáveis, mais p frente, vão guardar informações p construir o canvas
 let ALTURA=600, LARGURA=600; // dimensões do canvas em pixels
-let PADRAO=60;
+let PADRAO=60; // padronizar o tamanho do elementos dentro ddo canvas
 
 let comandos = [] 
 /* este array vai se uma matriz que vai guardar: [deslocamento no eixo X, deslocamento no eixo Y, "inicial da direção"], esses valores vão depender das setinhas q foram clicadas antes de dar enter */
 var bloco = {
     // coordenadas do ponto dentro do canvas que o bloco vai começar a ser desenhado
-    x: 240, // eixo X
-    y: 240, // eixo Y
+    x: 0, // eixo X
+    y: ALTURA - PADRAO, // eixo Y
     // a partir do ponto acima vai dimencionar o bloco dando altura e largura para ele
-    alt: 60, // altura
-    larg: 60, // largura
+    alt: PADRAO, // altura
+    larg: PADRAO, // largura
     movimentos: [], /* qnd clicar enter, vai chamar a função moveBloco() e os elementos dentro de comandos vão
     compôr as coordenadas q o bloco vai percorrer pelo canvas. movimentos vai guardar coordenadas  junto com
     a inicial da direção q o bloco vai (d, e, c, b) */
@@ -173,22 +173,22 @@ function mover(tecla){
         if(tecla==37){
             // setinha para ESQUERDA: 37
             // letra A: tecla==97 || tecla==65
-            comandos.push([-60, 0, "e"])
+            comandos.push([-PADRAO, 0, "e"])
             addDirecao("&larr;")
         } else if(tecla==38){
             // setinha para CIMA: 38
             // letra W: tecla==119 || tecla==87
-            comandos.push([0, -60, "c"])
+            comandos.push([0, -PADRAO, "c"])
             addDirecao("&uarr;")
         } else if(tecla==39){
             // setinha para DIREITA: 39
             // letra D: tecla==100 ||tecla==68
-            comandos.push([60, 0, "d"])
+            comandos.push([PADRAO, 0, "d"])
             addDirecao("&rarr;")
         } else if(tecla==40){
             // setinha para BAIXO: 40
             // letra S: tecla==115 || tecla==83
-            comandos.push([0, 60, "b"])
+            comandos.push([0, PADRAO, "b"])
             addDirecao("&darr;")
         } else if(tecla==13){
             // enter: 13
