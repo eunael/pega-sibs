@@ -4,6 +4,34 @@ let PADRAO=60; // padronizar o tamanho do elementos dentro ddo canvas
 
 let comandos = [] 
 /* este array vai se uma matriz que vai guardar: [deslocamento no eixo X, deslocamento no eixo Y, "inicial da direção"], esses valores vão depender das setinhas q foram clicadas antes de dar enter */
+
+// SÍLABAS
+// todas as sílabas
+let todasSilabas = [
+    ["BA", "BE", "BI", "BO", "BU"],
+    ["CA", "CE", "CI", "CO", "CU"],
+    ["DA", "DE", "DI", "DO", "DU"],
+    ["FA", "FE", "FI", "FO", "FU"],
+    ["GA", "GE", "GI", "GO", "GU"],
+    ["HA", "HE", "HI", "HO", "HU"],
+    ["JA", "JE", "JI", "JO", "JU"],
+    ["KA", "KE", "KI", "KO", "KU"],
+    ["LA", "LE", "LI", "LO", "LU"],
+    ["MA", "ME", "MI", "MO", "MU"],
+    ["NA", "NE", "NI", "NO", "NU"],
+    ["PA", "PE", "PI", "PO", "PU"],
+    ["QUA", "QUE", "QUI", "QUO"],
+    ["RA", "RE", "RI", "RO", "RU"],
+    ["SA", "SE", "SI", "SO", "SU"],
+    ["TA", "TE", "TI", "TO", "TU"],
+    ["VA", "VE", "VI", "VO", "VU"],
+    ["XA", "XE", "XI", "XO", "XU"],
+    ["ZA", "ZE", "ZI", "ZO", "ZU"],
+]
+// posições possíveis para as sílabas dentro do canvas
+let posicaoX = [60, 120, 180, 240, 300, 360, 420, 480]
+let posicaoY = [60, 120, 180, 240, 300, 360, 420, 480]
+
 var bloco = {
     // coordenadas do ponto dentro do canvas que o bloco vai começar a ser desenhado
     x: 0, // eixo X
@@ -109,6 +137,92 @@ var bloco = {
         }
         comandos = [] // dps q enviar todos as coordenadas para movimentos, vai resetar comandos
     },
+}
+
+var silabas = {
+    _sibs: [], // vai receber cada quadradinho de sílabas cada um com seus atributos
+    posicoes: [], // vai sortear posições dentro do canvas para cada sílaba
+
+    sorteiaSilaba: function(){
+        let linha, coluna, sibsSorteada, achou;
+        // sorteia uma sílaba e vê se ela já existe, se existir ele sortea outra
+        do {
+            achou = 0 // essa variável vai identificar se a sílaba que vai ser sorteada já foi sorteada antes
+            linha = Math.floor(Math.random()*todasSilabas.length) //consoante
+            coluna = Math.floor(Math.random()*5) //vogal
+            sibsSorteada = todasSilabas[linha][coluna] // sílaba sorteada lá de todasSilabas
+            for (i in this._sibs){
+                // aqui vai verificar se sibsSorteada já foi sorteada
+                if(this._sibs[i].s === sibsSorteada){
+                    console.log("já tem "+sibsSorteada)
+                    achou = 1
+                    break // quebra o for
+                }
+            }
+        }while(achou == 1) // se a sílaba já foi sorteada, ele vai repetir até sortear uma que não foi sorteada antes
+        // console.log(sibsSorteada)
+        return sibsSorteada // vai retornar um sílaba que não foi sorteada antes
+    },
+
+    sorteiaPosicao: function(){
+        let sort, achou, posx, posy
+        let posiX = posicaoX.slice()
+        let posiY = posicaoY.slice()
+        
+        do {
+            // mesmo esquema do sorteio das sílabas
+            achou = 0 // indicador para saber ser as coordenadas que vão ser sorteadas já foram sorteadas
+            sort = Math.floor(Math.random()*posiX.length)
+            posx = posiX[sort] // sorteia uma posição no eixo X
+            sort = Math.floor(Math.random()*posiY.length)
+            posy = posiY[sort] // sorteia uma posição no eixo Y
+
+            for (i in this._sibs){
+                // vai verificar se posx e posy já foram sorteadas para que uma sílaba não fique encima de outra
+                if((this._sibs[i].x === posx && this._sibs[i].y === posy)){
+                    console.log("já tem "+posx+" "+posy)
+                    achou = 1
+                    break // quebra o for
+                }
+            }
+        } while(achou == 1) // se achou essa coordenada, repete até sortear uma que não foi
+        // console.log([posx, posy])
+        
+        return [posx, posy] // retorna uma coordenada que nunca foi sorteada
+    },
+
+    constroiSilabas: function(){
+        for (var x=0; x<14; x++){ // x máx é 64, se for mais vai cair num loop eterno
+            let sib = this.sorteiaSilaba()
+            let posis = this.sorteiaPosicao()
+            // console.log([sib, posis])
+            this._sibs.push({
+                color: "#fff",
+                x: posis[0],
+                y: posis[1],
+                largSilaba: PADRAO,
+                altSilaba: PADRAO,
+                s: sib,
+                passou: false
+            })
+        }
+        // Há um problema com as posições onde pode acontecer que 5 sílabas formem uma cruz "+" e o bloco não consegue alcançada a do meio sem ter que passar pelas sílabas que estão rodeando ela. É PARA RESOLVER.
+    },
+
+    atualizaSilabas: function(){
+        // p fazer
+    },
+
+    desenhaSilabas: function(){
+        for(var b=0; b<this._sibs.length; b++){
+            let sib = this._sibs[b]
+            ctx.fillStyle = sib.color
+            ctx.fillRect(sib.x, sib.y, sib.largSilaba, sib.largSilaba)
+            ctx.fillStyle = "#0f0"
+            ctx.font = "30px Arial"
+            ctx.fillText(sib.s, sib.x+7, sib.y+40)
+        }
+    }
 }
 
 function linhas(){
@@ -218,6 +332,9 @@ function desenha(){
     // vai desenhas o xadrez no canvas
     linhas()
 
+    // vai desenhar as sílabas
+    silabas.desenhaSilabas()
+
     // vai desenhar o bloco no canvas a cada posição nova
     bloco.desenhaBloco()
 }
@@ -242,6 +359,9 @@ function main(){
     ctx = canvas.getContext("2d")
     // adiciona esse canvas criado no html
     document.body.appendChild(canvas)
+
+    // vai inserir as sílabas sorteadas para cada partida
+    silabas.constroiSilabas()
 
     // isso vai identidicar qual tecla foi clicada
     document.addEventListener('keydown', (event) => {
