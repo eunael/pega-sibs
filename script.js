@@ -1,6 +1,7 @@
 let canvas, ctx; // essas variáveis, mais p frente, vão guardar informações p construir o canvas
 let ALTURA=600, LARGURA=600; // dimensões do canvas em pixels
 let PADRAO=60; // padronizar o tamanho do elementos dentro ddo canvas
+let numSib = 14; // número de sílabas que vão aparecer
 
 let comandos = [] 
 /* este array vai se uma matriz que vai guardar: [deslocamento no eixo X, deslocamento no eixo Y, "inicial da direção"], esses valores vão depender das setinhas q foram clicadas antes de dar enter */
@@ -192,7 +193,7 @@ var silabas = {
     },
 
     constroiSilabas: function(){
-        for (var x=0; x<14; x++){ // x máx é 64, se for mais vai cair num loop eterno
+        for (var x=0; x<numSib; x++){ // x máx é 64, se for mais vai cair num loop eterno
             let sib = this.sorteiaSilaba()
             let posis = this.sorteiaPosicao()
             // console.log([sib, posis])
@@ -204,17 +205,27 @@ var silabas = {
                 altSilaba: PADRAO,
                 s: sib,
                 passou: false
+                // precisa de alguma coisa p identificar que essa é a sílaba certa da palavra
             })
         }
         // Há um problema com as posições onde pode acontecer que 5 sílabas formem uma cruz "+" e o bloco não consegue alcançada a do meio sem ter que passar pelas sílabas que estão rodeando ela. É PARA RESOLVER.
     },
 
     atualizaSilabas: function(){
-        // p fazer
+        // como as sílabas não vão mudar de lugar, elas vão apenas atualizar sua cor quando o bloco passa por cima
+        for(var x=0; x<numSib; x++){
+            let silaba = this._sibs[x]
+            if(bloco.x == silaba.x && bloco.y == silaba.y){
+                silaba.passou = true
+                silaba.color = "#0f0"
+            }
+        }
+
     },
 
     desenhaSilabas: function(){
         for(var b=0; b<this._sibs.length; b++){
+            // vai senhar cada quadrado com sua respectiva sílaba dentro
             let sib = this._sibs[b]
             ctx.fillStyle = sib.color
             ctx.fillRect(sib.x, sib.y, sib.largSilaba, sib.largSilaba)
@@ -321,6 +332,7 @@ function mover(tecla){
 function atualiza(){
     // essa função vai atualizar tudas as posições antes de desenhar
     bloco.atualizaBloco()
+    silabas.atualizaSilabas()
 }
 function desenha(){
     // essa função vai desenhar tudo no html
