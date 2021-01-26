@@ -96,7 +96,7 @@ var bloco = {
     },
     desenhaBloco: function(){
         // vai desenhar o bloco da cor ctx.fillStyle e nas coordenadas indicadas em ctx.fillRect
-        ctx.fillStyle = "#ff0000"
+        ctx.fillStyle = "#f26e11"
         ctx.fillRect(this.x, this.y, this.larg, this.alt)
     },
 
@@ -198,7 +198,7 @@ var silabas = {
             let posis = this.sorteiaPosicao()
             // console.log([sib, posis])
             this._sibs.push({
-                color: "#fff",
+                color: "#f2f2f2",
                 x: posis[0],
                 y: posis[1],
                 largSilaba: PADRAO,
@@ -217,7 +217,7 @@ var silabas = {
             let silaba = this._sibs[x]
             if(bloco.x == silaba.x && bloco.y == silaba.y){
                 silaba.passou = true
-                silaba.color = "#0f0"
+                silaba.color = "#3ac5f0"
             }
         }
 
@@ -225,20 +225,31 @@ var silabas = {
 
     desenhaSilabas: function(){
         for(var b=0; b<this._sibs.length; b++){
-            // vai senhar cada quadrado com sua respectiva sílaba dentro
+            // vai desenhar cada quadrado com sua respectiva sílaba dentro
             let sib = this._sibs[b]
             ctx.fillStyle = sib.color
             ctx.fillRect(sib.x, sib.y, sib.largSilaba, sib.largSilaba)
-            ctx.fillStyle = "#0f0"
-            ctx.font = "30px Arial"
-            ctx.fillText(sib.s, sib.x+7, sib.y+40)
+            ctx.fillStyle = "#282828"
+            
+            // alinhar direitinho as sílabas dentro dos seus quadrados
+            if (todasSilabas[12].indexOf(sib.s) != -1) { // sílabas com Q
+                ctx.font = "25px Arial"
+                ctx.fillText(sib.s, sib.x+3, sib.y+40)
+            } else {
+                ctx.font = "30px Arial"
+                if (sib.s.indexOf('I') != -1) { // sílabas com I
+                    ctx.fillText(sib.s, sib.x+14, sib.y+40)
+                } else { // sílabas com A, E, O ou U
+                    ctx.fillText(sib.s, sib.x+9, sib.y+40)
+                }
+            }
         }
     }
 }
 
 function linhas(){
     // isso é p desenhas aquelas linhas no canvas que nem um xadrez
-    ctx.strokeStyle="#009f00"
+    ctx.strokeStyle="#282828"
     for(var x=PADRAO; x<LARGURA; x+=PADRAO){
         ctx.beginPath();
         ctx.moveTo(x, 0);
@@ -338,17 +349,22 @@ function desenha(){
     // essa função vai desenhar tudo no html
 
     // desenha o canvas
-    ctx.fillStyle = "#000000"
+    ctx.fillStyle = "#014c78"
     ctx.fillRect(0, 0, LARGURA, ALTURA)
 
+    
+    // vai desenhar as sílabas
+    silabas.desenhaSilabas()
+    
     // vai desenhas o xadrez no canvas
     linhas()
 
-    // vai desenhar as sílabas
-    silabas.desenhaSilabas()
-
     // vai desenhar o bloco no canvas a cada posição nova
     bloco.desenhaBloco()
+}
+
+function desenhaUmaVez() {
+    
 }
 
 function roda(){
@@ -367,6 +383,7 @@ function main(){
     canvas = document.createElement("canvas")
     canvas.width = LARGURA
     canvas.height = ALTURA
+    canvas.style.border = "1px solid #282828";
     // o contexto do canvas é 2d, só poder fazer desenhos de figuras 2d
     ctx = canvas.getContext("2d")
     // adiciona esse canvas criado no html
