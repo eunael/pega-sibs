@@ -151,18 +151,27 @@ var silabas = {
             achou = 0 // essa variável vai identificar se a sílaba que vai ser sorteada já foi sorteada antes
             linha = Math.floor(Math.random()*todasSilabas.length) //consoante
             coluna = Math.floor(Math.random()*5) //vogal
-            sibsSorteada = todasSilabas[linha][coluna] // sílaba sorteada lá de todasSilabas
-            for (i in this._sibs){
-                // aqui vai verificar se sibsSorteada já foi sorteada
-                if(this._sibs[i].s === sibsSorteada){
-                    console.log("já tem "+sibsSorteada)
-                    achou = 1
-                    break // quebra o for
+
+            if (linha == 12 && coluna == 4) { // ([12,4] dá erro pq não existe a sílaba "QUU")
+                // vamos forçar o dowhile se repetir dnv
+                achou = 1
+            } else {
+                console.log('a');
+                sibsSorteada = todasSilabas[linha][coluna] // sílaba sorteada lá de todasSilabas
+                
+                // console.log(sibsSorteada);
+                for (i in this._sibs){
+                    // aqui vai verificar se sibsSorteada já foi sorteada
+                    if(this._sibs[i].s === sibsSorteada){
+                        // console.log("já tem "+sibsSorteada)
+                        achou = 1
+                        break // quebra o for
+                    }
                 }
             }
         }while(achou == 1) // se a sílaba já foi sorteada, ele vai repetir até sortear uma que não foi sorteada antes
         // console.log(sibsSorteada)
-        return sibsSorteada // vai retornar um sílaba que não foi sorteada antes
+        return sibsSorteada // vai retornar UMA sílaba que não foi sorteada antes
     },
 
     sorteiaPosicao: function(){
@@ -181,7 +190,7 @@ var silabas = {
             for (i in this._sibs){
                 // vai verificar se posx e posy já foram sorteadas para que uma sílaba não fique encima de outra
                 if((this._sibs[i].x === posx && this._sibs[i].y === posy)){
-                    console.log("já tem "+posx+" "+posy)
+                    // console.log("já tem "+posx+" "+posy)
                     achou = 1
                     break // quebra o for
                 }
@@ -189,25 +198,27 @@ var silabas = {
         } while(achou == 1) // se achou essa coordenada, repete até sortear uma que não foi
         // console.log([posx, posy])
         
-        return [posx, posy] // retorna uma coordenada que nunca foi sorteada
+        return [posx, posy] // retorna UMA coordenada que nunca foi sorteada
     },
 
     constroiSilabas: function(){
         for (var x=0; x<numSib; x++){ // x máx é 64, se for mais vai cair num loop eterno
             let sib = this.sorteiaSilaba()
             let posis = this.sorteiaPosicao()
+            // console.log(sib);
             // console.log([sib, posis])
             this._sibs.push({
+                s: sib,
                 color: "#f2f2f2",
                 x: posis[0],
                 y: posis[1],
                 largSilaba: PADRAO,
                 altSilaba: PADRAO,
-                s: sib,
                 passou: false
                 // precisa de alguma coisa p identificar que essa é a sílaba certa da palavra
             })
         }
+        console.log(this._sibs);
         // Há um problema com as posições onde pode acontecer que 5 sílabas formem uma cruz "+" e o bloco não consegue alcançada a do meio sem ter que passar pelas sílabas que estão rodeando ela. É PARA RESOLVER.
     },
 
@@ -230,6 +241,7 @@ var silabas = {
             ctx.fillStyle = sib.color
             ctx.fillRect(sib.x, sib.y, sib.largSilaba, sib.largSilaba)
             ctx.fillStyle = "#282828"
+            // console.log(sib.s);
             
             // alinhar direitinho as sílabas dentro dos seus quadrados
             if (todasSilabas[12].indexOf(sib.s) != -1) { // sílabas com Q
