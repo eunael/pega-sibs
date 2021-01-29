@@ -156,7 +156,7 @@ var silabas = {
                 // vamos forçar o dowhile se repetir dnv
                 achou = 1
             } else {
-                console.log('a');
+                // console.log('a');
                 sibsSorteada = todasSilabas[linha][coluna] // sílaba sorteada lá de todasSilabas
                 
                 // console.log(sibsSorteada);
@@ -218,7 +218,7 @@ var silabas = {
                 // precisa de alguma coisa p identificar que essa é a sílaba certa da palavra
             })
         }
-        console.log(this._sibs);
+        // console.log(this._sibs);
         // Há um problema com as posições onde pode acontecer que 5 sílabas formem uma cruz "+" e o bloco não consegue alcançada a do meio sem ter que passar pelas sílabas que estão rodeando ela. É PARA RESOLVER.
     },
 
@@ -240,10 +240,10 @@ var silabas = {
             let sib = this._sibs[b]
             ctx.fillStyle = sib.color
             ctx.fillRect(sib.x, sib.y, sib.largSilaba, sib.largSilaba)
-            ctx.fillStyle = "#282828"
             // console.log(sib.s);
             
             // alinhar direitinho as sílabas dentro dos seus quadrados
+            ctx.fillStyle = "#282828"
             if (todasSilabas[12].indexOf(sib.s) != -1) { // sílabas com Q
                 ctx.font = "25px Arial"
                 ctx.fillText(sib.s, sib.x+3, sib.y+40)
@@ -262,18 +262,39 @@ var silabas = {
 function linhas(){
     // isso é p desenhas aquelas linhas no canvas que nem um xadrez
     ctx.strokeStyle="#282828"
+    // vertical
     for(var x=PADRAO; x<LARGURA; x+=PADRAO){
         ctx.beginPath();
         ctx.moveTo(x, 0);
         ctx.lineTo(x, ALTURA);
         ctx.stroke();
     }
-    for(var x=PADRAO; x<ALTURA; x+=PADRAO){
+    // horizontal
+    for(var y=PADRAO; y<ALTURA; y+=PADRAO){
         ctx.beginPath();
-        ctx.moveTo(0, x);
-        ctx.lineTo(LARGURA, x);
+        ctx.moveTo(0, y);
+        ctx.lineTo(LARGURA, y);
         ctx.stroke();
     }
+}
+
+function numeraCanvas() {
+    ctx.fillStyle = "#282828"
+
+    // linhas
+    let y = 45
+    for(var i=0; i<10; i++){
+        ctx.font = "40px Arial"
+        ctx.fillText(`${i}`, 20, y)
+        y += 60
+    }
+    // colunas
+    let x = 80
+    for(var i=1; i<10; i++){
+        ctx.font = "40px Arial"
+        ctx.fillText(`${i}`, x, 45)
+        x += 60
+    }  
 }
 
 /** CAIXINHA DA DIV */
@@ -370,6 +391,8 @@ function desenha(){
     
     // vai desenhas o xadrez no canvas
     linhas()
+
+    numeraCanvas()
 
     // vai desenhar o bloco no canvas a cada posição nova
     bloco.desenhaBloco()
