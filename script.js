@@ -6,9 +6,26 @@ let numSib = 14; // número de sílabas que vão aparecer
 let comandos = [] 
 /* este array vai se uma matriz que vai guardar: [deslocamento no eixo X, deslocamento no eixo Y, "inicial da direção"], esses valores vão depender das setinhas q foram clicadas antes de dar enter */
 
+// PALAVRAS
+// quem vai dar a meta do jogo
+const palavras = [
+    {'frase': "Confeito doce e colorido", 'word': ['BA', 'LA']},
+    {'frase': "Item onde guardamos coisas para viagem", 'word': ['MA', 'LA']},
+    {'frase': "Principal comida de um aniversário", 'word': ['BO', 'LO']}
+]
+
+function sorteiaPalavra() {
+    let qnt_palavras = parseInt(palavras.length)
+    let sort = Math.floor(Math.random() * qnt_palavras)
+    let sort_palavra = palavras[sort]
+    
+    return sort_palavra;
+}
+
+
 // SÍLABAS
 // todas as sílabas
-let todasSilabas = [
+const todasSilabas = [
     ["BA", "BE", "BI", "BO", "BU"],
     ["CA", "CE", "CI", "CO", "CU"],
     ["DA", "DE", "DI", "DO", "DU"],
@@ -144,12 +161,14 @@ var silabas = {
     _sibs: [], // vai receber cada quadradinho de sílabas cada um com seus atributos
     posicoes: [], // vai sortear posições dentro do canvas para cada sílaba
 
+
+
     sorteiaSilaba: function(){
         let linha, coluna, sibsSorteada, achou;
         // sorteia uma sílaba e vê se ela já existe, se existir ele sortea outra
         do {
             achou = 0 // essa variável vai identificar se a sílaba que vai ser sorteada já foi sorteada antes
-            linha = Math.floor(Math.random()*todasSilabas.length) //consoante
+            linha = Math.floor(Math.random() * (todasSilabas.length)) //consoante
             coluna = Math.floor(Math.random()*5) //vogal
 
             if (linha == 12 && coluna == 4) { // ([12,4] dá erro pq não existe a sílaba "QUU")
@@ -201,8 +220,31 @@ var silabas = {
         return [posx, posy] // retorna UMA coordenada que nunca foi sorteada
     },
 
+    constroiPalavra: function () {
+        let palavra = sorteiaPalavra() // {'frase', 'word'}
+
+        console.log(palavra.word);
+
+        for (let x = 0; x < palavra.word.length; x++) {
+            let silaba = palavra.word[x];
+            let posis = this.sorteiaPosicao()
+            
+            this._sibs.push({
+                s: silaba,
+                color: "#f2f2f2",
+                x: posis[0],
+                y: posis[1],
+                largSilaba: PADRAO,
+                altSilaba: PADRAO,
+                passou: false,
+                is_essa: true,
+            })
+        }
+        return palavra.frase
+    },
+
     constroiSilabas: function(){
-        for (var x=0; x<numSib; x++){ // x máx é 64, se for mais vai cair num loop eterno
+        for (var x=0; x<(numSib); x++){ // x máx é 64, se for mais vai cair num loop eterno
             let sib = this.sorteiaSilaba()
             let posis = this.sorteiaPosicao()
             // console.log(sib);
@@ -214,7 +256,8 @@ var silabas = {
                 y: posis[1],
                 largSilaba: PADRAO,
                 altSilaba: PADRAO,
-                passou: false
+                passou: false,
+                is_essa: false,
                 // precisa de alguma coisa p identificar que essa é a sílaba certa da palavra
             })
         }
@@ -224,11 +267,16 @@ var silabas = {
 
     atualizaSilabas: function(){
         // como as sílabas não vão mudar de lugar, elas vão apenas atualizar sua cor quando o bloco passa por cima
-        for(var x=0; x<numSib; x++){
+        for(var x=0; x<(this._sibs.length); x++){
             let silaba = this._sibs[x]
             if(bloco.x == silaba.x && bloco.y == silaba.y){
+                console.log(silaba.s);
                 silaba.passou = true
-                silaba.color = "#3ac5f0"
+                if (silaba.is_essa) {
+                    silaba.color = "#37c978"   
+                } else {
+                    silaba.color = "#f45728"
+                }
             }
         }
 
@@ -308,7 +356,7 @@ function delDirecao(num){
     // vai apagar as setinhas da div
     lista = document.querySelector('#lista')
     let itens = lista.childNodes
-    if(num == -1){
+    if(num == -1 && itens.length > 0){
         // qnd apertar backspace vai apagar a última setinha clicada
         let ind = itens.length-1
         lista.removeChild(lista.childNodes[ind])
@@ -398,10 +446,6 @@ function desenha(){
     bloco.desenhaBloco()
 }
 
-function desenhaUmaVez() {
-    
-}
-
 function roda(){
     // essa função vai renderizar cada quadro
 
@@ -424,7 +468,11 @@ function main(){
     // adiciona esse canvas criado no html
     document.body.appendChild(canvas)
 
-    // vai inserir as sílabas sorteadas para cada partida
+    // primeiro desenhas as sílabas certas da palavra
+    const frase = silabas.constroiPalavra()
+    console.log(frase);
+    document.getElementById('frase').textContent = frase;
+    // dps, vai inserir as sílabas sorteadas para cada partida
     silabas.constroiSilabas()
 
     // isso vai identidicar qual tecla foi clicada
