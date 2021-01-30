@@ -1,19 +1,20 @@
 let canvas, ctx; // essas variáveis, mais p frente, vão guardar informações p construir o canvas
 let ALTURA=600, LARGURA=600; // dimensões do canvas em pixels
 let PADRAO=60; // padronizar o tamanho do elementos dentro ddo canvas
-let numSib = 14; // número de sílabas que vão aparecer
+let numSib = 12; // número de sílabas que vão aparecer
 
 let comandos = [] 
 /* este array vai se uma matriz que vai guardar: [deslocamento no eixo X, deslocamento no eixo Y, "inicial da direção"], esses valores vão depender das setinhas q foram clicadas antes de dar enter */
 
 // PALAVRAS
 // quem vai dar a meta do jogo
+// {'frase': 'que vai ser mostrada no painel dando uma dicas', 'word': ['as sílabas da palavra']}
 const palavras = [
     {'frase': "Confeito doce e colorido", 'word': ['BA', 'LA']},
     {'frase': "Item onde guardamos coisas para viagem", 'word': ['MA', 'LA']},
     {'frase': "Principal comida de um aniversário", 'word': ['BO', 'LO']}
 ]
-
+// vai sortear uma das palavras acima
 function sorteiaPalavra() {
     let qnt_palavras = parseInt(palavras.length)
     let sort = Math.floor(Math.random() * qnt_palavras)
@@ -21,7 +22,6 @@ function sorteiaPalavra() {
     
     return sort_palavra;
 }
-
 
 // SÍLABAS
 // todas as sílabas
@@ -53,7 +53,7 @@ let posicaoY = [60, 120, 180, 240, 300, 360, 420, 480]
 var bloco = {
     // coordenadas do ponto dentro do canvas que o bloco vai começar a ser desenhado
     x: 0, // eixo X
-    y: ALTURA - PADRAO, // eixo Y
+    y: 0, // eixo Y
     // a partir do ponto acima vai dimencionar o bloco dando altura e largura para ele
     alt: PADRAO, // altura
     larg: PADRAO, // largura
@@ -161,9 +161,8 @@ var silabas = {
     _sibs: [], // vai receber cada quadradinho de sílabas cada um com seus atributos
     posicoes: [], // vai sortear posições dentro do canvas para cada sílaba
 
-
-
-    sorteiaSilaba: function(){
+    palavra: sorteiaPalavra(), // vai sortear e retornar uma palavra {'frase', 'word'}
+    sorteiaSilaba: function(){ // sorteio das demais sílabas
         let linha, coluna, sibsSorteada, achou;
         // sorteia uma sílaba e vê se ela já existe, se existir ele sortea outra
         do {
@@ -221,14 +220,11 @@ var silabas = {
     },
 
     constroiPalavra: function () {
-        let palavra = sorteiaPalavra() // {'frase', 'word'}
-
-        console.log(palavra.word);
-
-        for (let x = 0; x < palavra.word.length; x++) {
-            let silaba = palavra.word[x];
-            let posis = this.sorteiaPosicao()
-            
+        // vai construi o quadrado com as sílabas da palavra que foi sorteada
+        for (let x = 0; x < this.palavra.word.length; x++) {
+            let silaba = this.palavra.word[x]; // será cada sílaba que a palavra tem
+            let posis = this.sorteiaPosicao() // vai sortear uma coordenada para o quadrado da sílaba
+            // vai adicionar no Array de sílabas
             this._sibs.push({
                 s: silaba,
                 color: "#f2f2f2",
@@ -237,14 +233,17 @@ var silabas = {
                 largSilaba: PADRAO,
                 altSilaba: PADRAO,
                 passou: false,
-                is_essa: true,
+                is_essa: true, // identidicados para saber que essa é sílaba certa qnd o bloco passar
             })
         }
-        return palavra.frase
+        return this.palavra.frase // retorna a frase para poder escrevê-la no painel de dicas
     },
 
     constroiSilabas: function(){
-        for (var x=0; x<(numSib); x++){ // x máx é 64, se for mais vai cair num loop eterno
+        // vai contruir as demais sílabas e seus respectivos quadrados
+        for (var x=0; x<(numSib + Math.trunc(this.palavra.word.length / 3)); x++){
+            // x máx é 64, se for mais vai cair num loop eterno
+            // a cada três sílabas da palavra certa, é adiconada uma sílaba aleatória
             let sib = this.sorteiaSilaba()
             let posis = this.sorteiaPosicao()
             // console.log(sib);
@@ -258,7 +257,6 @@ var silabas = {
                 altSilaba: PADRAO,
                 passou: false,
                 is_essa: false,
-                // precisa de alguma coisa p identificar que essa é a sílaba certa da palavra
             })
         }
         // console.log(this._sibs);
@@ -270,11 +268,11 @@ var silabas = {
         for(var x=0; x<(this._sibs.length); x++){
             let silaba = this._sibs[x]
             if(bloco.x == silaba.x && bloco.y == silaba.y){
-                console.log(silaba.s);
-                silaba.passou = true
-                if (silaba.is_essa) {
+                // console.log(silaba.s);
+                silaba.passou = true // vai indicar que o bloco passou por essa sílaba
+                if (silaba.is_essa) { // se for a sílaba certa, pinta de verde
                     silaba.color = "#37c978"   
-                } else {
+                } else { // se for a sílaba errada, pinta de vermelho
                     silaba.color = "#f45728"
                 }
             }
@@ -326,7 +324,7 @@ function linhas(){
     }
 }
 
-function numeraCanvas() {
+function numeraCanvas() { // vai enumerar o canvas tipo um batalha naval
     ctx.fillStyle = "#282828"
 
     // linhas
@@ -366,6 +364,7 @@ function delDirecao(num){
     }
 }
 function addDirecao(simb){
+    // vai adicionar, ou remover as setinha da div, ou mudar a cor da estrela p verde
     // simb recebe oq foi clicado
     lista = document.querySelector('#lista')
     if (simb === "back"){
@@ -417,12 +416,12 @@ function mover(tecla){
             addDirecao("back")
         }
     } else {
-        // console.log('o bloco tá andando, calma')
+        // console.log('o bloco tá andando. calma')
     }
 }
 
 function atualiza(){
-    // essa função vai atualizar tudas as posições antes de desenhar
+    // essa função vai atualizar todas as posições dos elementos do canvas antes de serem redesenhar
     bloco.atualizaBloco()
     silabas.atualizaSilabas()
 }
@@ -432,7 +431,6 @@ function desenha(){
     // desenha o canvas
     ctx.fillStyle = "#014c78"
     ctx.fillRect(0, 0, LARGURA, ALTURA)
-
     
     // vai desenhar as sílabas
     silabas.desenhaSilabas()
@@ -440,6 +438,7 @@ function desenha(){
     // vai desenhas o xadrez no canvas
     linhas()
 
+    // desenhas os números
     numeraCanvas()
 
     // vai desenhar o bloco no canvas a cada posição nova
@@ -455,6 +454,7 @@ function roda(){
     // aqui vai criar tipo um loop p rederização dos quadros não parar
     window.requestAnimationFrame(roda)
 }
+
 function main(){
     // esse main vai dar o start em tudo sempre q der um f5
 
@@ -468,9 +468,9 @@ function main(){
     // adiciona esse canvas criado no html
     document.body.appendChild(canvas)
 
-    // primeiro desenhas as sílabas certas da palavra
+    // primeiro desenhas as sílabas certas da palavra e retorna a dica
     const frase = silabas.constroiPalavra()
-    console.log(frase);
+    // mostra a dica no painel
     document.getElementById('frase').textContent = frase;
     // dps, vai inserir as sílabas sorteadas para cada partida
     silabas.constroiSilabas()
