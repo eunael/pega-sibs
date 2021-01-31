@@ -1,7 +1,24 @@
 let canvas, ctx; // essas variáveis, mais p frente, vão guardar informações p construir o canvas
-let ALTURA=600, LARGURA=600; // dimensões do canvas em pixels
-let PADRAO=60; // padronizar o tamanho do elementos dentro ddo canvas
-let numSib = 12; // número de sílabas que vão aparecer
+const ALTURA=600, LARGURA=600; // dimensões do canvas em pixels
+const PADRAO=60; // padronizar o tamanho do elementos dentro ddo canvas
+const numSib = 12; // número de sílabas que vão aparecer
+
+// estados que o jogo pode está
+const estados = { 
+    'jogar': 0,
+    'jogando': 1,
+    'ganhou': 2,
+    'perdeu': 3,
+};
+// vai indicar o estado do jogo: se está para começar ainda, se estão jogando, se ganhou ou se perdeu
+let estadoJogo;
+
+// estados em que o bloco pode estar
+const estadosBloco = { 
+    'start': 0, // esperando receber os movimentos
+    'andando': 1, // executando os movimentos
+    'fim': 2, // terminou de executar os movimentos
+};
 
 let comandos = [] 
 /* este array vai se uma matriz que vai guardar: [deslocamento no eixo X, deslocamento no eixo Y, "inicial da direção"], esses valores vão depender das setinhas q foram clicadas antes de dar enter */
@@ -60,7 +77,8 @@ var bloco = {
     movimentos: [], /* qnd clicar enter, vai chamar a função moveBloco() e os elementos dentro de comandos vão
     compôr as coordenadas q o bloco vai percorrer pelo canvas. movimentos vai guardar coordenadas  junto com
     a inicial da direção q o bloco vai (d, e, c, b) */
-    estadoBloco: false, // vai indicar o estado do bloco, se ele está andando (true) ou parado (false)
+    
+    estado: estadosBloco.start, // vai indicar o estado do bloco a cada momento, incialmente ela vai está em start
 
     atualizaBloco: function(){
         // atualizaBloco vai atualizar a posição do bloco a cada movimento executado antes do bloco ser desenhado novamente
@@ -68,7 +86,7 @@ var bloco = {
         /* -------------- VALIDAÇÕES -------------- */
         if(this.movimentos.length != 0){
             // se ainda tiver algum movimento dentro de this.movimentos para ser executado:
-            this.estadoBloco = true
+            this.estado = estadosBloco.andando
             if(this.movimentos[0][2]==="d"){
                 // se for para direita:
                 if(this.x == this.movimentos[0][0]){
@@ -105,9 +123,11 @@ var bloco = {
                     this.y -= 5
                 }
             }
-        } else{
+        } else {
             // qnd os movimentos acabarem, a estrelinha volta a ficar branca
-            this.estadoBloco = false
+            if(this.estado == estadosBloco.andando){
+                this.estado = estadosBloco.fim
+            }
             mudaCorDiv("white")
         }
     },
@@ -155,6 +175,18 @@ var bloco = {
         }
         comandos = [] // dps q enviar todos as coordenadas para movimentos, vai resetar comandos
     },
+
+    resetaBloco: function () {
+        // quando ganhar ou perder o jogo, essa função vai resetar tudo que for do bloco
+        this.x = 0
+        this.y = 0
+        this.alt = PADRAO
+        this.larg = PADRAO
+        while (this.movimentos.length) {
+            this.movimentos.pop();
+        }
+        this.estado = estadosBloco.start
+    },
 }
 
 var silabas = {
@@ -162,6 +194,9 @@ var silabas = {
     posicoes: [], // vai sortear posições dentro do canvas para cada sílaba
 
     palavra: sorteiaPalavra(), // vai sortear e retornar uma palavra {'frase', 'word'}
+    sibs_certas: [],
+    sibs_aleatorias: [], // as demais sílabas
+
     sorteiaSilaba: function(){ // sorteio das demais sílabas
         let linha, coluna, sibsSorteada, achou;
         // sorteia uma sílaba e vê se ela já existe, se existir ele sortea outra
@@ -222,11 +257,11 @@ var silabas = {
     constroiPalavra: function () {
         // vai construi o quadrado com as sílabas da palavra que foi sorteada
         for (let x = 0; x < this.palavra.word.length; x++) {
-            let silaba = this.palavra.word[x]; // será cada sílaba que a palavra tem
+            let sibWord = this.palavra.word[x]; // será cada sílaba que a palavra tem
             let posis = this.sorteiaPosicao() // vai sortear uma coordenada para o quadrado da sílaba
             // vai adicionar no Array de sílabas
-            this._sibs.push({
-                s: silaba,
+            let silaba = {
+                s: sibWord,
                 color: "#f2f2f2",
                 x: posis[0],
                 y: posis[1],
@@ -234,7 +269,9 @@ var silabas = {
                 altSilaba: PADRAO,
                 passou: false,
                 is_essa: true, // identidicados para saber que essa é sílaba certa qnd o bloco passar
-            })
+            }
+            this._sibs.push(silaba)
+            this.sibs_certas.push(silaba)
         }
         return this.palavra.frase // retorna a frase para poder escrevê-la no painel de dicas
     },
@@ -246,9 +283,7 @@ var silabas = {
             // a cada três sílabas da palavra certa, é adiconada uma sílaba aleatória
             let sib = this.sorteiaSilaba()
             let posis = this.sorteiaPosicao()
-            // console.log(sib);
-            // console.log([sib, posis])
-            this._sibs.push({
+            let silaba = {
                 s: sib,
                 color: "#f2f2f2",
                 x: posis[0],
@@ -257,7 +292,9 @@ var silabas = {
                 altSilaba: PADRAO,
                 passou: false,
                 is_essa: false,
-            })
+            }
+            this._sibs.push(silaba)
+            this.sibs_aleatorias.push(silaba)
         }
         // console.log(this._sibs);
         // Há um problema com as posições onde pode acontecer que 5 sílabas formem uma cruz "+" e o bloco não consegue alcançada a do meio sem ter que passar pelas sílabas que estão rodeando ela. É PARA RESOLVER.
@@ -268,7 +305,7 @@ var silabas = {
         for(var x=0; x<(this._sibs.length); x++){
             let silaba = this._sibs[x]
             if(bloco.x == silaba.x && bloco.y == silaba.y){
-                // console.log(silaba.s);
+                console.log(`certa: ${silaba.is_essa} / passou: ${silaba.passou}`);
                 silaba.passou = true // vai indicar que o bloco passou por essa sílaba
                 if (silaba.is_essa) { // se for a sílaba certa, pinta de verde
                     silaba.color = "#37c978"   
@@ -302,6 +339,15 @@ var silabas = {
                 }
             }
         }
+    },
+    resetaSilabas: function () {
+        this._sibs = []
+        this.posicoes = []
+        // this.palavra = ""
+        this.palavra = sorteiaPalavra()
+
+        this.sibs_certas = []
+        this.sibs_aleatorias = []
     }
 }
 
@@ -384,8 +430,8 @@ function addDirecao(simb){
 
 function mover(tecla){
     // essa função identificar qual seta do teclado foi clicada e faz as condições
-    let estBloco = bloco.estadoBloco
-    if(!estBloco){
+    let estBloco = bloco.estado
+    if(estBloco == estadosBloco.start && estadoJogo == estados.jogando){
         if(tecla==37){
             // setinha para ESQUERDA: 37
             // letra A: tecla==97 || tecla==65
@@ -406,35 +452,60 @@ function mover(tecla){
             // letra S: tecla==115 || tecla==83
             comandos.push([0, PADRAO, "b"])
             addDirecao("&darr;")
-        } else if(tecla==13){
-            // enter: 13
+        } else if(tecla==13) {
             bloco.moveBloco()
             addDirecao("enter")
-        } else if(tecla==8){
+        } 
+        else if(tecla==8){
             // enter: 13
             comandos.pop()
             addDirecao("back")
         }
-    } else {
-        // console.log('o bloco tá andando. calma')
+    } else if(tecla==13){
+        // enter: 13
+        if (estadoJogo == estados.jogar) { // qnd o estado do jogo for 'jogar', qnd clicar no enter vai começar o jogo
+            bloco.resetaBloco()
+            silabas.resetaSilabas()
+            const frase = silabas.constroiPalavra()
+            // mostra a dica no painel
+            document.getElementById('frase').textContent = frase;
+            // dps, vai inserir as sílabas sorteadas para cada partida
+            silabas.constroiSilabas()
+            // primeiro desenhas as sílabas certas da palavra e retorna a dica
+            estadoJogo =  estados.jogando
+        } else if ((estadoJogo == estados.ganhou || estadoJogo == estados.perdeu)) {
+            // console.log(estadoJogo);
+            estadoJogo = estados.jogar
+        }
+            
     }
 }
 
 function atualiza(){
     // essa função vai atualizar todas as posições dos elementos do canvas antes de serem redesenhar
-    bloco.atualizaBloco()
-    silabas.atualizaSilabas()
+    if (estadoJogo == estados.jogando) {
+        bloco.atualizaBloco()
+        silabas.atualizaSilabas()
+    }
 }
-function desenha(){
-    // essa função vai desenhar tudo no html
 
-    // desenha o canvas
-    ctx.fillStyle = "#014c78"
-    ctx.fillRect(0, 0, LARGURA, ALTURA)
-    
+// desenha o canvas em cada estado do jogo
+function canvasJogar() {
+    ctx.fillStyle = "#ff0"
+    ctx.fillRect(240, 240, 120, 120)
+}
+function canvasGanhou() {
+    ctx.fillStyle = "#0f0"
+    ctx.fillRect(240, 240, 120, 120)
+}
+function canvasPerdeu() {
+    ctx.fillStyle = "#f00"
+    ctx.fillRect(240, 240, 120, 120)
+}
+function canvasJogando() {
     // vai desenhar as sílabas
     silabas.desenhaSilabas()
-    
+        
     // vai desenhas o xadrez no canvas
     linhas()
 
@@ -443,6 +514,42 @@ function desenha(){
 
     // vai desenhar o bloco no canvas a cada posição nova
     bloco.desenhaBloco()
+
+    if (bloco.estado == estadosBloco.fim) {
+        let passou_certas = silabas.sibs_certas.every((silaba) => silaba.passou == true)
+        let passou_erradas = silabas.sibs_aleatorias.some((silaba) => silaba.passou == true)
+        // console.log(`${passou_certas} / ${passou_erradas}`);
+        if (passou_certas == true && passou_erradas == false) {
+            // ganhou
+            console.log('ganhou');
+            estadoJogo = estados.ganhou
+        } else {
+            // perdeu
+            console.log('perdeu');
+            estadoJogo = estados.perdeu
+        }
+    }
+}
+
+function desenha(){
+    // essa função vai desenhar tudo no html
+
+    // desenha o canvas
+    ctx.fillStyle = "#014c78"
+    ctx.fillRect(0, 0, LARGURA, ALTURA)
+
+    if (estadoJogo == estados.jogar) {
+        // isso é mudar o canvas para indicar que o jogo está no estado 'jogar'
+        canvasJogar()
+    } else if(estadoJogo == estados.jogando){
+        canvasJogando()
+        
+    } else if (estadoJogo == estados.ganhou) {
+        canvasGanhou()
+    } else if (estadoJogo == estados.perdeu) {
+        canvasPerdeu()
+    }
+
 }
 
 function roda(){
@@ -468,12 +575,15 @@ function main(){
     // adiciona esse canvas criado no html
     document.body.appendChild(canvas)
 
-    // primeiro desenhas as sílabas certas da palavra e retorna a dica
-    const frase = silabas.constroiPalavra()
-    // mostra a dica no painel
-    document.getElementById('frase').textContent = frase;
-    // dps, vai inserir as sílabas sorteadas para cada partida
-    silabas.constroiSilabas()
+    // iniciamente, o estado do jogo começa em 'jogar':0
+    estadoJogo = estados.jogar
+
+    // // primeiro desenhas as sílabas certas da palavra e retorna a dica
+    // const frase = silabas.constroiPalavra()
+    // // mostra a dica no painel
+    // document.getElementById('frase').textContent = frase;
+    // // dps, vai inserir as sílabas sorteadas para cada partida
+    // silabas.constroiSilabas()
 
     // isso vai identidicar qual tecla foi clicada
     document.addEventListener('keydown', (event) => {
