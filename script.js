@@ -84,7 +84,7 @@ var bloco = {
         // atualizaBloco vai atualizar a posição do bloco a cada movimento executado antes do bloco ser desenhado novamente
 
         /* -------------- VALIDAÇÕES -------------- */
-        if(this.movimentos.length != 0){
+        if(this.movimentos.length != 0 && estadoJogo == estados.jogando){
             // se ainda tiver algum movimento dentro de this.movimentos para ser executado:
             this.estado = estadosBloco.andando
             if(this.movimentos[0][2]==="d"){
@@ -124,10 +124,11 @@ var bloco = {
                 }
             }
         } else {
-            // qnd os movimentos acabarem, a estrelinha volta a ficar branca
             if(this.estado == estadosBloco.andando){
+                // caso o bloco estava andando e terminou de andar
                 this.estado = estadosBloco.fim
             }
+            // qnd os movimentos acabarem, a estrelinha volta a ficar branca
             mudaCorDiv("white")
         }
     },
@@ -305,7 +306,7 @@ var silabas = {
         for(var x=0; x<(this._sibs.length); x++){
             let silaba = this._sibs[x]
             if(bloco.x == silaba.x && bloco.y == silaba.y){
-                console.log(`certa: ${silaba.is_essa} / passou: ${silaba.passou}`);
+                // console.log(`certa: ${silaba.is_essa} / passou: ${silaba.passou}`);
                 silaba.passou = true // vai indicar que o bloco passou por essa sílaba
                 if (silaba.is_essa) { // se for a sílaba certa, pinta de verde
                     silaba.color = "#37c978"   
@@ -343,7 +344,6 @@ var silabas = {
     resetaSilabas: function () {
         this._sibs = []
         this.posicoes = []
-        // this.palavra = ""
         this.palavra = sorteiaPalavra()
 
         this.sibs_certas = []
@@ -463,18 +463,22 @@ function mover(tecla){
         }
     } else if(tecla==13){
         // enter: 13
-        if (estadoJogo == estados.jogar) { // qnd o estado do jogo for 'jogar', qnd clicar no enter vai começar o jogo
-            bloco.resetaBloco()
-            silabas.resetaSilabas()
+        if (estadoJogo == estados.jogar) { // qnd o estado do jogo for 'jogar'
+            // qnd clicar no enter, vai começar o jogo
+            bloco.resetaBloco() // reseta o bloco
+            silabas.resetaSilabas() // apaga as sílabas do jogo anterior
+
+            // primeiro desenhas as sílabas certas da palavra e retorna a dica
             const frase = silabas.constroiPalavra()
             // mostra a dica no painel
             document.getElementById('frase').textContent = frase;
             // dps, vai inserir as sílabas sorteadas para cada partida
             silabas.constroiSilabas()
-            // primeiro desenhas as sílabas certas da palavra e retorna a dica
+            
+            // por fim, muda o estado do jogo
             estadoJogo =  estados.jogando
         } else if ((estadoJogo == estados.ganhou || estadoJogo == estados.perdeu)) {
-            // console.log(estadoJogo);
+            // muda o estado para 'jogar' para que o jogador possa jogar novamente
             estadoJogo = estados.jogar
         }
             
@@ -539,14 +543,20 @@ function desenha(){
     ctx.fillRect(0, 0, LARGURA, ALTURA)
 
     if (estadoJogo == estados.jogar) {
-        // isso é mudar o canvas para indicar que o jogo está no estado 'jogar'
+        // canvas com o jogo no estado 'joga'
+
         canvasJogar()
     } else if(estadoJogo == estados.jogando){
+        // canvas com o jogo no estado 'jogando'
+
         canvasJogando()
-        
     } else if (estadoJogo == estados.ganhou) {
+        // canvas com o jogo no estado 'ganhou'
+
         canvasGanhou()
     } else if (estadoJogo == estados.perdeu) {
+        // canvas com o jogo no estado 'perdeu'
+
         canvasPerdeu()
     }
 
@@ -577,13 +587,6 @@ function main(){
 
     // iniciamente, o estado do jogo começa em 'jogar':0
     estadoJogo = estados.jogar
-
-    // // primeiro desenhas as sílabas certas da palavra e retorna a dica
-    // const frase = silabas.constroiPalavra()
-    // // mostra a dica no painel
-    // document.getElementById('frase').textContent = frase;
-    // // dps, vai inserir as sílabas sorteadas para cada partida
-    // silabas.constroiSilabas()
 
     // isso vai identidicar qual tecla foi clicada
     document.addEventListener('keydown', (event) => {
