@@ -25,12 +25,12 @@ let comandos = []
 
 // PALAVRAS
 // quem vai dar a meta do jogo
-// {'frase': 'que vai ser mostrada no painel dando uma dicas', 'word': ['as sílabas da palavra']}
+// {'imagem': 'nome-da-imagem.png', 'word': ['as sílabas da palavra']}
 const palavras = [
-    {'frase': "Confeito doce e colorido", 'word': ['BA', 'LA']},
-    {'frase': "Item onde guardamos coisas para viagem", 'word': ['MA', 'LA']},
-    {'frase': "Principal comida de um aniversário", 'word': ['BO', 'LO']}
-]
+    {'imagem': "img-dica-bala.png", 'word': ['BA', 'LA']},
+    {'imagem': "img-dica-mala.png", 'word': ['MA', 'LA']},
+    {'imagem': "img-dica-bolo.png", 'word': ['BO', 'LO']}
+] // *** automatizar o índice de imagem
 // vai sortear uma das palavras acima
 function sorteiaPalavra() {
     let qnt_palavras = parseInt(palavras.length)
@@ -194,7 +194,7 @@ var silabas = {
     _sibs: [], // vai receber cada quadradinho de sílabas cada um com seus atributos
     posicoes: [], // vai sortear posições dentro do canvas para cada sílaba
 
-    palavra: sorteiaPalavra(), // vai sortear e retornar uma palavra {'frase', 'word'}
+    palavra: sorteiaPalavra(), // vai sortear e retornar uma palavra {'imagem', 'word'}
     sibs_certas: [],
     sibs_aleatorias: [], // as demais sílabas
 
@@ -274,7 +274,7 @@ var silabas = {
             this._sibs.push(silaba)
             this.sibs_certas.push(silaba)
         }
-        return this.palavra.frase // retorna a frase para poder escrevê-la no painel de dicas
+        return this.palavra.imagem // retorna a frase para poder escrevê-la no painel de dicas
     },
 
     constroiSilabas: function(){
@@ -429,8 +429,10 @@ function addDirecao(simb){
 }
 
 function mover(tecla){
+    /** RESOLVER: SE EU CLICO NO BOTÃO E DPS NO ENTER, VALE POR 2 ENTER E ISSO NÃO É BOM, EM */
     // essa função identificar qual seta do teclado foi clicada e faz as condições
     let estBloco = bloco.estado
+    let img = document.getElementById('img-dica'); // imagem da dica
     if(estBloco == estadosBloco.start && estadoJogo == estados.jogando){
         if(tecla==37){
             // setinha para ESQUERDA: 37
@@ -470,9 +472,11 @@ function mover(tecla){
             silabas.resetaSilabas() // apaga as sílabas do jogo anterior
 
             // primeiro desenhas as sílabas certas da palavra e retorna a dica
-            const frase = silabas.constroiPalavra()
+            const nome_imagem = silabas.constroiPalavra()
             // mostra a dica no painel
-            document.getElementById('frase').textContent = frase;
+            let img_src = img.getAttribute('src') + nome_imagem
+            img.setAttribute('src', img_src)
+            img.style.display = "block"
             // muda a palavra do botão
             btnplay.children[0].textContent = "PLAY"
             // dps, vai inserir as sílabas sorteadas para cada partida
@@ -482,6 +486,11 @@ function mover(tecla){
             estadoJogo =  estados.jogando
         } else if ((estadoJogo == estados.ganhou || estadoJogo == estados.perdeu)) {
             btnplay.children[0].textContent = "INICIAR"
+            // resetar o caminho até as imagens tirando a imagem que tava antes
+            let img_src_split = img.getAttribute('src').split('/')
+            let img_src = `${img_src_split[0]}/${img_src_split[1]}/`
+            img.setAttribute('src', img_src)
+            img.style.display = "none"
             // muda o estado para 'jogar' para que o jogador possa jogar novamente
             estadoJogo = estados.jogar
         }
