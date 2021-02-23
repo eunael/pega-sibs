@@ -463,6 +463,7 @@ function mover(tecla){
         }
     } else if(tecla==13){
         // enter: 13
+        const btnplay = document.getElementById("btn-play") // botão que também tem a função do enter
         if (estadoJogo == estados.jogar) { // qnd o estado do jogo for 'jogar'
             // qnd clicar no enter, vai começar o jogo
             bloco.resetaBloco() // reseta o bloco
@@ -472,12 +473,15 @@ function mover(tecla){
             const frase = silabas.constroiPalavra()
             // mostra a dica no painel
             document.getElementById('frase').textContent = frase;
+            // muda a palavra do botão
+            btnplay.children[0].textContent = "PLAY"
             // dps, vai inserir as sílabas sorteadas para cada partida
             silabas.constroiSilabas()
             
             // por fim, muda o estado do jogo
             estadoJogo =  estados.jogando
         } else if ((estadoJogo == estados.ganhou || estadoJogo == estados.perdeu)) {
+            btnplay.children[0].textContent = "INICIAR"
             // muda o estado para 'jogar' para que o jogador possa jogar novamente
             estadoJogo = estados.jogar
         }
@@ -495,14 +499,26 @@ function atualiza(){
 
 // desenha o canvas em cada estado do jogo
 function canvasJogar() {
+    ctx.fillStyle = "#f2f2f2"
+    ctx.font = "40px Arial"
+    ctx.fillText(`COMEÇAR`, 197, 225)
+
     ctx.fillStyle = "#ff0"
     ctx.fillRect(240, 240, 120, 120)
 }
 function canvasGanhou() {
+    ctx.fillStyle = "#f2f2f2"
+    ctx.font = "40px Arial"
+    ctx.fillText(`VOCÊ GANHOU!`, 145, 225)
+
     ctx.fillStyle = "#0f0"
     ctx.fillRect(240, 240, 120, 120)
 }
 function canvasPerdeu() {
+    ctx.fillStyle = "#f2f2f2"
+    ctx.font = "40px Arial"
+    ctx.fillText(`VOCÊ PERDEU.`, 155, 225)
+
     ctx.fillStyle = "#f00"
     ctx.fillRect(240, 240, 120, 120)
 }
@@ -525,11 +541,9 @@ function canvasJogando() {
         // console.log(`${passou_certas} / ${passou_erradas}`);
         if (passou_certas == true && passou_erradas == false) {
             // ganhou
-            console.log('ganhou');
             estadoJogo = estados.ganhou
         } else {
             // perdeu
-            console.log('perdeu');
             estadoJogo = estados.perdeu
         }
     }
@@ -593,6 +607,9 @@ function main(){
 
         var num = event.keyCode // cada tecla tem um código q identifica ela
         mover(num) // envio esse código p função "mover()" lá em cima e faços as condições (if) p pegar só os códigos referentes as setas
+    })
+    document.getElementById("btn-play").addEventListener('click', () => {
+        mover(13)
     })
     roda() // aqui da o start p renderisar os quadros
 }
