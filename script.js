@@ -1,7 +1,8 @@
-let canvas, ctx; // essas variáveis, mais p frente, vão guardar informações p construir o canvas
+var canvas, ctx; // essas variáveis, mais p frente, vão guardar informações p construir o canvas
 const ALTURA=600, LARGURA=600; // dimensões do canvas em pixels
 const PADRAO=60; // padronizar o tamanho do elementos dentro ddo canvas
 const numSib = 12; // número de sílabas que vão aparecer
+var img;
 
 // estados que o jogo pode está
 const estados = { 
@@ -454,7 +455,7 @@ function mover(tecla){
             // letra S: tecla==115 || tecla==83
             comandos.push([0, PADRAO, "b"])
             addDirecao("&darr;")
-        } else if(tecla==13) {
+        } else if(tecla=="play") {
             bloco.moveBloco()
             addDirecao("enter")
         } 
@@ -463,7 +464,7 @@ function mover(tecla){
             comandos.pop()
             addDirecao("back")
         }
-    } else if(tecla==13){
+    } else if(tecla=="play"){
         // enter: 13
         const btnplay = document.getElementById("btn-play") // botão que também tem a função do enter
         if (estadoJogo == estados.jogar) { // qnd o estado do jogo for 'jogar'
@@ -508,6 +509,9 @@ function atualiza(){
 
 // desenha o canvas em cada estado do jogo
 function canvasJogar() {
+    ctx.fillStyle = "#0000004e"
+    ctx.fillRect(0, 0, LARGURA, ALTURA)
+
     ctx.fillStyle = "#f2f2f2"
     ctx.font = "40px Arial"
     ctx.fillText(`COMEÇAR`, 197, 225)
@@ -516,6 +520,9 @@ function canvasJogar() {
     ctx.fillRect(240, 240, 120, 120)
 }
 function canvasGanhou() {
+    ctx.fillStyle = "#0000004e"
+    ctx.fillRect(0, 0, LARGURA, ALTURA)
+
     ctx.fillStyle = "#f2f2f2"
     ctx.font = "40px Arial"
     ctx.fillText(`VOCÊ GANHOU!`, 145, 225)
@@ -524,6 +531,9 @@ function canvasGanhou() {
     ctx.fillRect(240, 240, 120, 120)
 }
 function canvasPerdeu() {
+    ctx.fillStyle = "#0000004e"
+    ctx.fillRect(0, 0, LARGURA, ALTURA)
+
     ctx.fillStyle = "#f2f2f2"
     ctx.font = "40px Arial"
     ctx.fillText(`VOCÊ PERDEU.`, 155, 225)
@@ -562,8 +572,9 @@ function desenha(){
     // essa função vai desenhar tudo no html
 
     // desenha o canvas
-    ctx.fillStyle = "#014c78"
-    ctx.fillRect(0, 0, LARGURA, ALTURA)
+    // ctx.fillStyle = "#014c78"
+    // ctx.fillRect(0, 0, LARGURA, ALTURA)
+    bg.desenha(0, 0)
 
     if (estadoJogo == estados.jogar) {
         // canvas com o jogo no estado 'joga'
@@ -618,8 +629,10 @@ function main(){
         mover(num) // envio esse código p função "mover()" lá em cima e faços as condições (if) p pegar só os códigos referentes as setas
     })
     document.getElementById("btn-play").addEventListener('click', () => {
-        mover(13)
+        mover("play")
     })
+    img = new Image();
+    img.src = "imagens/sheet.png"
     roda() // aqui da o start p renderisar os quadros
 }
 main() // chamo a função main() p começar tudo
