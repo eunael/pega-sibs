@@ -1,4 +1,4 @@
-let canvas, ctx; // essas variáveis, mais p frente, vão guardar informações p construir o canvas
+let canvas, ctx, img; // essas variáveis, mais p frente, vão guardar informações p construir o canvas
 const ALTURA=600, LARGURA=600; // dimensões do canvas em pixels
 const PADRAO=60; // padronizar o tamanho do elementos dentro ddo canvas
 const numSib = 12; // número de sílabas que vão aparecer
@@ -13,16 +13,6 @@ const estados = {
 // vai indicar o estado do jogo: se está para começar ainda, se estão jogando, se ganhou ou se perdeu
 let estadoJogo;
 
-// estados em que o bloco pode estar
-const estadosBloco = { 
-    'start': 0, // esperando receber os movimentos
-    'andando': 1, // executando os movimentos
-    'fim': 2, // terminou de executar os movimentos
-};
-
-let comandos = [] 
-/* este array vai se uma matriz que vai guardar: [deslocamento no eixo X, deslocamento no eixo Y, "inicial da direção"], esses valores vão depender das setinhas q foram clicadas antes de dar enter */
-
 // PALAVRAS
 // quem vai dar a meta do jogo
 // {'imagem': 'nome-da-imagem.png', 'word': ['as sílabas da palavra']}
@@ -31,6 +21,7 @@ const palavras = [
     {'imagem': "img-dica-mala.png", 'word': ['MA', 'LA']},
     {'imagem': "img-dica-bolo.png", 'word': ['BO', 'LO']}
 ] // *** automatizar o índice de imagem
+
 // vai sortear uma das palavras acima
 function sorteiaPalavra() {
     let qnt_palavras = parseInt(palavras.length)
@@ -74,128 +65,49 @@ var bloco = {
     // a partir do ponto acima vai dimencionar o bloco dando altura e largura para ele
     alt: PADRAO, // altura
     larg: PADRAO, // largura
-    movimentos: [], /* qnd clicar enter, vai chamar a função moveBloco() e os elementos dentro de comandos vão
-    compôr as coordenadas q o bloco vai percorrer pelo canvas. movimentos vai guardar coordenadas  junto com
-    a inicial da direção q o bloco vai (d, e, c, b) */
-    
-    estado: estadosBloco.start, // vai indicar o estado do bloco a cada momento, incialmente ela vai está em start
+    cor: "#f26e11",
+    rastros: [],
+    corRastro: "#37c978",
 
-    atualizaBloco: function(){
-        // atualizaBloco vai atualizar a posição do bloco a cada movimento executado antes do bloco ser desenhado novamente
-
-        /* -------------- VALIDAÇÕES -------------- */
-        if(this.movimentos.length != 0 && estadoJogo == estados.jogando){
-            // se ainda tiver algum movimento dentro de this.movimentos para ser executado:
-            this.estado = estadosBloco.andando
-            if(this.movimentos[0][2]==="d"){
-                // se for para direita:
-                if(this.x == this.movimentos[0][0]){
-                    // se o X do bloco for igual a coordenada X q está nesse movimento para direita:
-                    delDirecao(0)
-                    this.movimentos.shift() // remove o primeiro elemento de this.movimento q é a direção q acabou de ser executada
-                } else{
-                    // se o X do bloco ainda não for igual a da coordenada, o X do bloco vai somar mais 5 até chegar
-                    this.x += 5
-                }
-            } else if(this.movimentos[0][2] === "e"){
-                // se for para esquerda:
-                if(this.x == this.movimentos[0][0]){
-                    delDirecao(0)
-                    this.movimentos.shift()
-                } else{
-                    this.x -= 5
-                }
-            } else if(this.movimentos[0][2]==="b"){
-                // se for para baixo:
-                if(this.y == this.movimentos[0][1]){
-                    // se o Y do bloco for igual a coordenada Y q está nesse movimento para baixo:
-                    delDirecao(0)
-                    this.movimentos.shift() // remove o primeiro elemento de this.movimento q é a direção q acabou de ser executada
-                } else{
-                    // se o X do bloco ainda não for igual a da coordenada, o X do bloco vai somar mais 5 até chegar
-                    this.y += 5
-                }
-            } else if(this.movimentos[0][2] === "c"){
-                if(this.y == this.movimentos[0][1]){
-                    delDirecao(0)
-                    this.movimentos.shift()
-                } else{
-                    this.y -= 5
-                }
-            }
-        } else {
-            if(this.estado == estadosBloco.andando){
-                // caso o bloco estava andando e terminou de andar
-                this.estado = estadosBloco.fim
-            }
-            // qnd os movimentos acabarem, a estrelinha volta a ficar branca
-            mudaCorDiv("white")
+    atualizaBloco: function(coordX, coordY){
+        if(this.x + coordX >= 0 && this.x + this.larg + coordX <= LARGURA && this.y + coordY >= 0 && this.y + this.alt + coordY <= ALTURA){
+            this.rastros.push([bloco.x, bloco.y])
+            this.x += coordX;
+            this.y += coordY
         }
     },
     desenhaBloco: function(){
         // vai desenhar o bloco da cor ctx.fillStyle e nas coordenadas indicadas em ctx.fillRect
-        ctx.fillStyle = "#f26e11"
+        ctx.fillStyle = this.cor
         ctx.fillRect(this.x, this.y, this.larg, this.alt)
     },
-
-    moveBloco: function(){
-        // moveBloco vai compôr os movimentos de acordo com os elementos dentro de comandos
-        for(com in comandos){
-            // vai percorrer cada elemento em comandos
-            let dir = comandos[com] // dir vai ser cada vetor dentro da matriz comandos [desloc. x, desloc. y, "letra"]
-            let x, y // vai guardar cada coordenada novas nos eixos X e Y
-            // as novas coordenadas vão ser assim: vai pegar a última posição q o bloco tava para compôr a próxima coordenada somando com o respectivo desloc.
-            
-            if(com == 0){
-                /* se for o primeiro vetor de comandos, vai pegar a coordenada atual do bloco e vai para validação*/
-                x = this.x
-                y = this.y
-            } else{
-                // os demais vetores, depois q fizer a primeira coordenada
-                /* esse X e Y vai pegar a última coordenada adicionada em movimentos e vai para a validação */
-                x = this.movimentos[com-1][0]
-                y = this.movimentos[com-1][1]
-            }
-            
-            /* -------------- VALIDAÇÕES -------------- */
-            /* estas validações vão ser para se a nova coordena do bloco exceder os limites do canvas */
-            if(x+dir[0] == LARGURA || x+dir[0] == 0 - this.larg){
-                // o x vai somar com o desloc. x do dir q o for está no momento
-                /* se essa soma exceder os limites do canvas:
-                 em vez de somar, vai diminuir de x o valor do desloc. x pq aí o bloco vai se manter no
-                 lugar, na mesma coordenada e essa coordenada não passar do limite do canvas */
-                x -= dir[0]
-            }
-            if(y+dir[1] == ALTURA || y+dir[1] == 0 - this.alt){
-                y -= dir[1]
-            }
-            
-            // dps de todas as validações, vai enviar para movimentos cada coordenadas
-            this.movimentos.push([x+dir[0], y+dir[1], dir[2]])
-            // movimentos vai ter uma matriz com cada coordenada q o bloco vai passar
+    desenhaRastros: function () {
+        ctx.fillStyle = this.corRastro
+        if (this.rastros.length > 20) {
+            this.rastros.shift()
         }
-        comandos = [] // dps q enviar todos as coordenadas para movimentos, vai resetar comandos
-    },
+        this.rastros.forEach(element => {
+            let coord = element
+            ctx.fillRect(coord[0], coord[1], this.larg, this.alt)
 
+        });  
+    },
     resetaBloco: function () {
         // quando ganhar ou perder o jogo, essa função vai resetar tudo que for do bloco
         this.x = 0
         this.y = 0
         this.alt = PADRAO
         this.larg = PADRAO
-        while (this.movimentos.length) {
-            this.movimentos.pop();
-        }
-        this.estado = estadosBloco.start
+        this.rastros = []
+        this.corRastro = "#37c978"
     },
 }
 
 var silabas = {
     _sibs: [], // vai receber cada quadradinho de sílabas cada um com seus atributos
-    posicoes: [], // vai sortear posições dentro do canvas para cada sílaba
 
     palavra: sorteiaPalavra(), // vai sortear e retornar uma palavra {'imagem', 'word'}
-    sibs_certas: [],
+    sibs_certas: [], // vai receber o objeto de cada sílaba certa
     sibs_aleatorias: [], // as demais sílabas
 
     sorteiaSilaba: function(){ // sorteio das demais sílabas
@@ -210,21 +122,18 @@ var silabas = {
                 // vamos forçar o dowhile se repetir dnv
                 achou = 1
             } else {
-                // console.log('a');
                 sibsSorteada = todasSilabas[linha][coluna] // sílaba sorteada lá de todasSilabas
                 
-                // console.log(sibsSorteada);
                 for (i in this._sibs){
                     // aqui vai verificar se sibsSorteada já foi sorteada
                     if(this._sibs[i].s === sibsSorteada){
-                        // console.log("já tem "+sibsSorteada)
                         achou = 1
                         break // quebra o for
                     }
                 }
             }
         }while(achou == 1) // se a sílaba já foi sorteada, ele vai repetir até sortear uma que não foi sorteada antes
-        // console.log(sibsSorteada)
+        
         return sibsSorteada // vai retornar UMA sílaba que não foi sorteada antes
     },
 
@@ -244,13 +153,12 @@ var silabas = {
             for (i in this._sibs){
                 // vai verificar se posx e posy já foram sorteadas para que uma sílaba não fique encima de outra
                 if((this._sibs[i].x === posx && this._sibs[i].y === posy)){
-                    // console.log("já tem "+posx+" "+posy)
                     achou = 1
+
                     break // quebra o for
                 }
             }
         } while(achou == 1) // se achou essa coordenada, repete até sortear uma que não foi
-        // console.log([posx, posy])
         
         return [posx, posy] // retorna UMA coordenada que nunca foi sorteada
     },
@@ -297,7 +205,6 @@ var silabas = {
             this._sibs.push(silaba)
             this.sibs_aleatorias.push(silaba)
         }
-        // console.log(this._sibs);
         // Há um problema com as posições onde pode acontecer que 5 sílabas formem uma cruz "+" e o bloco não consegue alcançada a do meio sem ter que passar pelas sílabas que estão rodeando ela. É PARA RESOLVER.
     },
 
@@ -305,13 +212,45 @@ var silabas = {
         // como as sílabas não vão mudar de lugar, elas vão apenas atualizar sua cor quando o bloco passa por cima
         for(var x=0; x<(this._sibs.length); x++){
             let silaba = this._sibs[x]
+            let na_ordem = true
             if(bloco.x == silaba.x && bloco.y == silaba.y){
-                // console.log(`certa: ${silaba.is_essa} / passou: ${silaba.passou}`);
                 silaba.passou = true // vai indicar que o bloco passou por essa sílaba
                 if (silaba.is_essa) { // se for a sílaba certa, pinta de verde
-                    silaba.color = "#37c978"   
+                    let sib_c = this.sibs_certas.find(element => element.s == silaba.s) // sílaba do array sibs_certas que o bloco passou
+                    sib_c.passou = true
+                    let ind_s_anterior = Number(this.sibs_certas.indexOf(sib_c)) - 1 // índice da sílaba em sibs_certas anterior a que o bloco passou
+                    
+                    if (ind_s_anterior != -1) {
+                        // se a sílaba que o bloco passou não for a primeira das certas
+                        if (this.sibs_certas[ind_s_anterior].passou == false) {
+                            // e a sílaba anterior a ela não foi passada, o jogador perde
+                            na_ordem = false // o jogador pegou a sílaba na ordem errada
+                        }
+                    }
+                }
+                if (na_ordem == true && silaba.is_essa) {
+                    // se estiver na ordem e for a sílaba certa
+                    silaba.color = "#37c978"
+                    bloco.cor = "#37c978"
+                    setTimeout(function() {
+                        bloco.cor = "#f26e11"
+                    }, 500)
+                    
+                    let passou_certas = silabas.sibs_certas.every((silaba) => silaba.passou == true)
+                    let passou_erradas = silabas.sibs_aleatorias.some((silaba) => silaba.passou == true)
+
+                    if (passou_certas == true && passou_erradas == false) {
+                        setTimeout(function() {
+                            estadoJogo = estados.ganhou
+                        }, 10)
+                    }
                 } else { // se for a sílaba errada, pinta de vermelho
                     silaba.color = "#f45728"
+                    bloco.cor = "#f45728"
+                    bloco.corRastro = "#f45728"
+                    setTimeout(function() {
+                        estadoJogo = estados.perdeu
+                    }, 10)
                 }
             }
         }
@@ -324,7 +263,6 @@ var silabas = {
             let sib = this._sibs[b]
             ctx.fillStyle = sib.color
             ctx.fillRect(sib.x, sib.y, sib.largSilaba, sib.largSilaba)
-            // console.log(sib.s);
             
             // alinhar direitinho as sílabas dentro dos seus quadrados
             ctx.fillStyle = "#282828"
@@ -343,7 +281,6 @@ var silabas = {
     },
     resetaSilabas: function () {
         this._sibs = []
-        this.posicoes = []
         this.palavra = sorteiaPalavra()
 
         this.sibs_certas = []
@@ -370,101 +307,27 @@ function linhas(){
     }
 }
 
-function numeraCanvas() { // vai enumerar o canvas tipo um batalha naval
-    ctx.fillStyle = "#282828"
-
-    // linhas
-    let y = 45
-    for(var i=0; i<10; i++){
-        ctx.font = "40px Arial"
-        ctx.fillText(`${i}`, 20, y)
-        y += 60
-    }
-    // colunas
-    let x = 80
-    for(var i=1; i<10; i++){
-        ctx.font = "40px Arial"
-        ctx.fillText(`${i}`, x, 45)
-        x += 60
-    }  
-}
-
-/** CAIXINHA DA DIV */
-let lista
-function mudaCorDiv(cor){
-    // muda a cor da estrelinha qnd clicar enter para indicar q os movimentos então sendi executados pelo bloco
-    let start = document.querySelector('#start')
-    start.style.background = cor
-}
-function delDirecao(num){
-    // vai apagar as setinhas da div
-    lista = document.querySelector('#lista')
-    let itens = lista.childNodes
-    if(num == -1 && itens.length > 0){
-        // qnd apertar backspace vai apagar a última setinha clicada
-        let ind = itens.length-1
-        lista.removeChild(lista.childNodes[ind])
-    } else if(num == 0){
-        // esse vai apagar as setinhas assim q o movimento for executado
-        lista.removeChild(lista.childNodes[0])
-    }
-}
-function addDirecao(simb){
-    // vai adicionar, ou remover as setinha da div, ou mudar a cor da estrela p verde
-    // simb recebe oq foi clicado
-    lista = document.querySelector('#lista')
-    if (simb === "back"){
-        delDirecao(-1)
-    } else if(simb === "enter"){
-        mudaCorDiv("#40e347ce")
-    }else{
-        // essa função vai add as setinhas na div se chegar ness condição
-        let item = document.createElement('li')
-        let label = document.createElement('label')
-        label.innerHTML = simb
-        item.appendChild(label)
-        lista.appendChild(item)
-    }
-    
-}
-
 function mover(tecla){
-    /** RESOLVER: SE EU CLICO NO BOTÃO E DPS NO ENTER, VALE POR 2 ENTER E ISSO NÃO É BOM, EM */
-    // essa função identificar qual seta do teclado foi clicada e faz as condições
-    let estBloco = bloco.estado
     let img = document.getElementById('img-dica'); // imagem da dica
-    if(estBloco == estadosBloco.start && estadoJogo == estados.jogando){
+    if(estadoJogo == estados.jogando){
         if(tecla==37){
             // setinha para ESQUERDA: 37
             // letra A: tecla==97 || tecla==65
-            comandos.push([-PADRAO, 0, "e"])
-            addDirecao("&larr;")
+            bloco.atualizaBloco(-60, 0)
         } else if(tecla==38){
             // setinha para CIMA: 38
             // letra W: tecla==119 || tecla==87
-            comandos.push([0, -PADRAO, "c"])
-            addDirecao("&uarr;")
+            bloco.atualizaBloco(0, -60)
         } else if(tecla==39){
             // setinha para DIREITA: 39
             // letra D: tecla==100 ||tecla==68
-            comandos.push([PADRAO, 0, "d"])
-            addDirecao("&rarr;")
+            bloco.atualizaBloco(60, 0)
         } else if(tecla==40){
             // setinha para BAIXO: 40
             // letra S: tecla==115 || tecla==83
-            comandos.push([0, PADRAO, "b"])
-            addDirecao("&darr;")
-        } else if(tecla==13) {
-            bloco.moveBloco()
-            addDirecao("enter")
-        } 
-        else if(tecla==8){
-            // enter: 13
-            comandos.pop()
-            addDirecao("back")
+            bloco.atualizaBloco(0, 60)
         }
-    } else if(tecla==13){
-        // enter: 13
+    }else if(tecla == 'click'){
         const btnplay = document.getElementById("btn-play") // botão que também tem a função do enter
         if (estadoJogo == estados.jogar) { // qnd o estado do jogo for 'jogar'
             // qnd clicar no enter, vai começar o jogo
@@ -483,7 +346,7 @@ function mover(tecla){
             silabas.constroiSilabas()
             
             // por fim, muda o estado do jogo
-            estadoJogo =  estados.jogando
+            estadoJogo = estados.jogando
         } else if ((estadoJogo == estados.ganhou || estadoJogo == estados.perdeu)) {
             btnplay.children[0].textContent = "INICIAR"
             // resetar o caminho até as imagens tirando a imagem que tava antes
@@ -494,20 +357,22 @@ function mover(tecla){
             // muda o estado para 'jogar' para que o jogador possa jogar novamente
             estadoJogo = estados.jogar
         }
-            
     }
 }
 
 function atualiza(){
     // essa função vai atualizar todas as posições dos elementos do canvas antes de serem redesenhar
     if (estadoJogo == estados.jogando) {
-        bloco.atualizaBloco()
         silabas.atualizaSilabas()
     }
 }
 
 // desenha o canvas em cada estado do jogo
 function canvasJogar() {
+    ctx.clearRect(0, 0, LARGURA, ALTURA)
+    ctx.fillStyle = "#014c78"
+    ctx.fillRect(0, 0, LARGURA, ALTURA)
+
     ctx.fillStyle = "#f2f2f2"
     ctx.font = "40px Arial"
     ctx.fillText(`COMEÇAR`, 197, 225)
@@ -532,38 +397,26 @@ function canvasPerdeu() {
     ctx.fillRect(240, 240, 120, 120)
 }
 function canvasJogando() {
+    ctx.clearRect(0, 0, LARGURA, ALTURA)
+    ctx.fillStyle = "#014c78"
+    ctx.fillRect(0, 0, LARGURA, ALTURA)
+
+    bloco.desenhaRastros()
+
     // vai desenhar as sílabas
     silabas.desenhaSilabas()
         
     // vai desenhas o xadrez no canvas
     linhas()
 
-    // desenhas os números
-    numeraCanvas()
-
     // vai desenhar o bloco no canvas a cada posição nova
     bloco.desenhaBloco()
-
-    if (bloco.estado == estadosBloco.fim) {
-        let passou_certas = silabas.sibs_certas.every((silaba) => silaba.passou == true)
-        let passou_erradas = silabas.sibs_aleatorias.some((silaba) => silaba.passou == true)
-        // console.log(`${passou_certas} / ${passou_erradas}`);
-        if (passou_certas == true && passou_erradas == false) {
-            // ganhou
-            estadoJogo = estados.ganhou
-        } else {
-            // perdeu
-            estadoJogo = estados.perdeu
-        }
-    }
 }
 
 function desenha(){
     // essa função vai desenhar tudo no html
 
     // desenha o canvas
-    ctx.fillStyle = "#014c78"
-    ctx.fillRect(0, 0, LARGURA, ALTURA)
 
     if (estadoJogo == estados.jogar) {
         // canvas com o jogo no estado 'joga'
@@ -612,13 +465,12 @@ function main(){
     estadoJogo = estados.jogar
 
     // isso vai identidicar qual tecla foi clicada
-    document.addEventListener('keydown', (event) => {
-
+    document.body.addEventListener('keydown', (event) => {
         var num = event.keyCode // cada tecla tem um código q identifica ela
         mover(num) // envio esse código p função "mover()" lá em cima e faços as condições (if) p pegar só os códigos referentes as setas
     })
-    document.getElementById("btn-play").addEventListener('click', () => {
-        mover(13)
+    document.getElementById('btn-play').addEventListener('click', function() {
+        mover('click')
     })
     roda() // aqui da o start p renderisar os quadros
 }
