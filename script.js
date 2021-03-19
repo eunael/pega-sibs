@@ -1,7 +1,7 @@
-let canvas, ctx, img; // essas variáveis, mais p frente, vão guardar informações p construir o canvas
-const ALTURA=600, LARGURA=600; // dimensões do canvas em pixels
-const PADRAO=60; // padronizar o tamanho do elementos dentro ddo canvas
-const numSib = 12; // número de sílabas que vão aparecer
+var canvas, ctx, img, frame,  // essas variáveis, mais p frente, vão guardar informações p construir o canvas
+ALTURA=600, LARGURA=600, // dimensões do canvas em pixels
+PADRAO=60, // padronizar o tamanho do elementos dentro ddo canvas
+numSib = 12; // número de sílabas que vão aparecer
 
 // estados que o jogo pode está
 const estados = { 
@@ -78,8 +78,8 @@ var bloco = {
     },
     desenhaBloco: function(){
         // vai desenhar o bloco da cor ctx.fillStyle e nas coordenadas indicadas em ctx.fillRect
-        ctx.fillStyle = this.cor
-        ctx.fillRect(this.x, this.y, this.larg, this.alt)
+        spriteBloco.desenhaSpriteBloco(frame, this.x, this.y)
+        
     },
     desenhaRastros: function () {
         ctx.fillStyle = this.corRastro
@@ -290,7 +290,7 @@ var silabas = {
 
 function linhas(){
     // isso é p desenhas aquelas linhas no canvas que nem um xadrez
-    ctx.strokeStyle="#282828"
+    ctx.strokeStyle="#262626"
     // vertical
     for(var x=PADRAO; x<LARGURA; x+=PADRAO){
         ctx.beginPath();
@@ -341,7 +341,7 @@ function mover(tecla){
             img.setAttribute('src', img_src)
             img.style.display = "block"
             // muda a palavra do botão
-            btnplay.children[0].textContent = "PLAY"
+            btnplay.children[0].textContent = "NOVO JOGO"
             // dps, vai inserir as sílabas sorteadas para cada partida
             silabas.constroiSilabas()
             
@@ -363,7 +363,10 @@ function mover(tecla){
 function atualiza(){
     // essa função vai atualizar todas as posições dos elementos do canvas antes de serem redesenhar
     if (estadoJogo == estados.jogando) {
+        frame ++
         silabas.atualizaSilabas()
+    } else {
+        frame = 0
     }
 }
 
@@ -372,36 +375,26 @@ function canvasJogar() {
     ctx.clearRect(0, 0, LARGURA, ALTURA)
     ctx.fillStyle = "#014c78"
     ctx.fillRect(0, 0, LARGURA, ALTURA)
-
-    ctx.fillStyle = "#f2f2f2"
-    ctx.font = "40px Arial"
-    ctx.fillText(`COMEÇAR`, 197, 225)
-
-    ctx.fillStyle = "#ff0"
-    ctx.fillRect(240, 240, 120, 120)
+    comecaJogo.desenha(95, 150)
 }
 function canvasGanhou() {
-    ctx.fillStyle = "#f2f2f2"
-    ctx.font = "40px Arial"
-    ctx.fillText(`VOCÊ GANHOU!`, 145, 225)
-
-    ctx.fillStyle = "#0f0"
-    ctx.fillRect(240, 240, 120, 120)
+    ganhouJogo.desenha(95, 150)
+    
 }
 function canvasPerdeu() {
-    ctx.fillStyle = "#f2f2f2"
-    ctx.font = "40px Arial"
-    ctx.fillText(`VOCÊ PERDEU.`, 155, 225)
+    perdeuJogo.desenha(95, 150)
 
-    ctx.fillStyle = "#f00"
-    ctx.fillRect(240, 240, 120, 120)
 }
 function canvasJogando() {
     ctx.clearRect(0, 0, LARGURA, ALTURA)
     ctx.fillStyle = "#014c78"
     ctx.fillRect(0, 0, LARGURA, ALTURA)
 
-    bloco.desenhaRastros()
+    // imagem do Sprite
+    // bg.desenha(0, 0)
+
+    // desenha os rastros de onde o bloco passou
+    // bloco.desenhaRastros()
 
     // vai desenhar as sílabas
     silabas.desenhaSilabas()
@@ -453,6 +446,7 @@ function main(){
 
     // cria o elemento <canvas></canvas> no html
     canvas = document.createElement("canvas")
+    canvas.setAttribute('id', 'canvas')
     canvas.width = LARGURA
     canvas.height = ALTURA
     canvas.style.border = "1px solid #282828";
@@ -469,9 +463,16 @@ function main(){
         var num = event.keyCode // cada tecla tem um código q identifica ela
         mover(num) // envio esse código p função "mover()" lá em cima e faços as condições (if) p pegar só os códigos referentes as setas
     })
+    document.getElementById('canvas').addEventListener('click', function() {
+        mover('click')
+    })
     document.getElementById('btn-play').addEventListener('click', function() {
         mover('click')
     })
+
+    img = new Image();
+    img.src = "imagens/folha.png"
+
     roda() // aqui da o start p renderisar os quadros
 }
-main() // chamo a função main() p começar tudo
+main() // chamo a função main() p começar tudo3
