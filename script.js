@@ -243,6 +243,8 @@ var silabas = {
                         setTimeout(function() {
                             estadoJogo = estados.ganhou
                         }, 10)
+                        document.getElementById('btn-play').removeAttribute('disabled')
+                        document.getElementById('btn-play').style.backgroundColor = "#00966b"
                     }
                 } else { // se for a sílaba errada, pinta de vermelho
                     silaba.color = "#f45728"
@@ -251,6 +253,8 @@ var silabas = {
                     setTimeout(function() {
                         estadoJogo = estados.perdeu
                     }, 10)
+                    document.getElementById('btn-play').removeAttribute('disabled')
+                    document.getElementById('btn-play').style.backgroundColor = "#00966b"
                 }
             }
         }
@@ -288,9 +292,53 @@ var silabas = {
     }
 }
 
+var desenhoDeFundo = {
+    linhas: [],
+    tempoInsere: 0,
+
+    insere: function() {
+      this.linhas.push({
+          x: LARGURA+10,
+          y: 0,
+      })
+      this.tempoInsere = 148; 
+    },
+    atualiza: function() {
+        if (this.tempoInsere == 0) {
+            this.insere()
+        } else {
+            this.tempoInsere--;
+        }
+        let tam = this.linhas.length
+        for (let i = 0; i < tam; i++) {
+            const linha = this.linhas[i];
+            linha.y += 1
+            if (linha.y > 800) {
+                // console.log('oi');
+                this.linhas.splice(i, 1)
+                tam--
+                i--
+            }
+        }
+    },
+    desenha: function() {
+        let tam = this.linhas.length
+        for (let i = 0; i < tam; i++) {
+            const linha = this.linhas[i];
+            ctx.strokeStyle = "#f5e020aa"
+            ctx.beginPath();
+            ctx.moveTo(-10, linha.y-200) // começa nos pontos da coordenada (0, y)
+            ctx.lineTo(610, linha.y) // e vai até as coordenada (LARGURA, y)
+            ctx.lineWidth = 15
+            ctx.stroke()   
+        }
+    }
+}
+
 function linhas(){
     // isso é p desenhas aquelas linhas no canvas que nem um xadrez
     ctx.strokeStyle="#262626"
+    ctx.lineWidth = 1
     // vertical
     for(var x=PADRAO; x<LARGURA; x+=PADRAO){
         ctx.beginPath();
@@ -308,7 +356,6 @@ function linhas(){
 }
 
 function mover(tecla){
-    console.log(tecla);
     let img = document.getElementById('img-dica'); // imagem da dica
     if(estadoJogo == estados.jogando){
         if(tecla==38){
@@ -347,6 +394,8 @@ function mover(tecla){
             silabas.constroiSilabas()
             
             // por fim, muda o estado do jogo
+            document.getElementById('btn-play').setAttribute('disabled', 'disabled')
+            document.getElementById('btn-play').style.backgroundColor = "#c4c4c4"
             estadoJogo = estados.jogando
         } else if ((estadoJogo == estados.ganhou || estadoJogo == estados.perdeu)) {
             btnplay.children[0].textContent = "INICIAR"
@@ -365,6 +414,7 @@ function atualiza(){
     // essa função vai atualizar todas as posições dos elementos do canvas antes de serem redesenhar
     if (estadoJogo == estados.jogando) {
         frame ++
+        // desenhoDeFundo.atualiza()
         silabas.atualizaSilabas()
     } else {
         frame = 0
@@ -390,6 +440,7 @@ function canvasJogando() {
     ctx.clearRect(0, 0, LARGURA, ALTURA)
     ctx.fillStyle = "#014c78"
     ctx.fillRect(0, 0, LARGURA, ALTURA)
+    // desenhoDeFundo.desenha()
 
     // imagem do Sprite
     // bg.desenha(0, 0)
