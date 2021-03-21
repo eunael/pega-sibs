@@ -308,13 +308,10 @@ function linhas(){
 }
 
 function mover(tecla){
+    console.log(tecla);
     let img = document.getElementById('img-dica'); // imagem da dica
     if(estadoJogo == estados.jogando){
-        if(tecla==37){
-            // setinha para ESQUERDA: 37
-            // letra A: tecla==97 || tecla==65
-            bloco.atualizaBloco(-60, 0)
-        } else if(tecla==38){
+        if(tecla==38){
             // setinha para CIMA: 38
             // letra W: tecla==119 || tecla==87
             bloco.atualizaBloco(0, -60)
@@ -326,7 +323,11 @@ function mover(tecla){
             // setinha para BAIXO: 40
             // letra S: tecla==115 || tecla==83
             bloco.atualizaBloco(0, 60)
-        }
+        } else if(tecla==37){
+            // setinha para ESQUERDA: 37
+            // letra A: tecla==97 || tecla==65
+            bloco.atualizaBloco(-60, 0)
+        } 
     }else if(tecla == 'click'){
         const btnplay = document.getElementById("btn-play") // botão que também tem a função do enter
         if (estadoJogo == estados.jogar) { // qnd o estado do jogo for 'jogar'
@@ -469,6 +470,13 @@ function main(){
     document.getElementById('btn-play').addEventListener('click', function() {
         mover('click')
     })
+    document.querySelectorAll(['.direcoes']).forEach(element => {
+        element.addEventListener('mousedown', function() {
+            let num = Number(element.getAttribute('direc'))
+            mover(num)
+            // console.log(num);
+        })
+    });
 
     img = new Image();
     img.src = "imagens/folha.png"
