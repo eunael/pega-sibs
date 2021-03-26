@@ -497,7 +497,7 @@ function main(){
     // esse main vai dar o start em tudo sempre q der um f5
 
     // cria o elemento <canvas></canvas> no html
-    canvas = document.createElement("canvas")
+    canvas = document.createElement('canvas')
     canvas.setAttribute('id', 'canvas')
     canvas.width = LARGURA
     canvas.height = ALTURA
@@ -505,7 +505,7 @@ function main(){
     // o contexto do canvas é 2d, só poder fazer desenhos de figuras 2d
     ctx = canvas.getContext("2d")
     // adiciona esse canvas criado no html
-    document.body.appendChild(canvas)
+    document.getElementById('telaCanvas').appendChild(canvas)
 
     // iniciamente, o estado do jogo começa em 'jogar':0
     estadoJogo = estados.jogar
