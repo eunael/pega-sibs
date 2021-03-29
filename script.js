@@ -19,8 +19,10 @@ let estadoJogo;
 const palavras = [
     {'imagem': "img-dica-bala.png", 'word': ['BA', 'LA']},
     {'imagem': "img-dica-mala.png", 'word': ['MA', 'LA']},
-    {'imagem': "img-dica-bolo.png", 'word': ['BO', 'LO']}
-] // *** automatizar o índice de imagem
+    {'imagem': "img-dica-bolo.png", 'word': ['BO', 'LO']},
+    {'imagem': "img-dica-sapato.png", 'word': ['SA', 'PA', 'TO']},
+    {'imagem': "img-dica-telefone.png", 'word': ['TE', 'LE', 'FO', 'NE']}
+]
 
 // vai sortear uma das palavras acima
 function sorteiaPalavra() {
@@ -65,22 +67,23 @@ var bloco = {
     // a partir do ponto acima vai dimencionar o bloco dando altura e largura para ele
     alt: PADRAO, // altura
     larg: PADRAO, // largura
-    cor: "#f26e11",
-    rastros: [],
-    corRastro: "#37c978",
+    // rastros: [],
+    // corRastro: "#37c978",
 
     atualizaBloco: function(coordX, coordY){
+        // atauliza a posição do bloco dentro do canvas cada clique da setinha
         if(this.x + coordX >= 0 && this.x + this.larg + coordX <= LARGURA && this.y + coordY >= 0 && this.y + this.alt + coordY <= ALTURA){
-            this.rastros.push([bloco.x, bloco.y])
+            // this.rastros.push([bloco.x, bloco.y])
             this.x += coordX;
             this.y += coordY
         }
     },
     desenhaBloco: function(){
-        // vai desenhar o bloco da cor ctx.fillStyle e nas coordenadas indicadas em ctx.fillRect
+        // vai desenhar a sprite do bloco a cada posição atualizada
         spriteBloco.desenhaSpriteBloco(frame, this.x, this.y)
         
     },
+    /* para discutir se é necessário. é apenas para desenhar o rastro por onde o bloco passou no canvas
     desenhaRastros: function () {
         ctx.fillStyle = this.corRastro
         if (this.rastros.length > 20) {
@@ -90,27 +93,27 @@ var bloco = {
             let coord = element
             ctx.fillRect(coord[0], coord[1], this.larg, this.alt)
 
-        });  
-    },
+    });  
+    },*/
     resetaBloco: function () {
         // quando ganhar ou perder o jogo, essa função vai resetar tudo que for do bloco
         this.x = 0
         this.y = 0
         this.alt = PADRAO
         this.larg = PADRAO
-        this.rastros = []
+        // this.rastros = []
         this.corRastro = "#37c978"
     },
 }
 
 var silabas = {
     _sibs: [], // vai receber cada quadradinho de sílabas cada um com seus atributos
-
-    palavra: sorteiaPalavra(), // vai sortear e retornar uma palavra {'imagem', 'word'}
     sibs_certas: [], // vai receber o objeto de cada sílaba certa
     sibs_aleatorias: [], // as demais sílabas
 
-    sorteiaSilaba: function(){ // sorteio das demais sílabas
+    palavra: sorteiaPalavra(), // vai sortear e retornar uma palavra {'imagem', 'word'}
+
+    sorteiaSilaba: function(){ // sorteio uma sílaba
         let linha, coluna, sibsSorteada, achou;
         // sorteia uma sílaba e vê se ela já existe, se existir ele sortea outra
         do {
@@ -137,7 +140,7 @@ var silabas = {
         return sibsSorteada // vai retornar UMA sílaba que não foi sorteada antes
     },
 
-    sorteiaPosicao: function(){
+    sorteiaPosicao: function(){ // sorteia uma cordenada (x, y)
         let sort, achou, posx, posy
         let posiX = posicaoX.slice()
         let posiY = posicaoY.slice()
