@@ -55,8 +55,14 @@ const todasSilabas = [
     ["ZA", "ZE", "ZI", "ZO", "ZU"],
 ]
 // posições possíveis para as sílabas dentro do canvas
-let posicaoX = [60, 120, 180, 240, 300, 360, 420, 480]
-let posicaoY = [60, 120, 180, 240, 300, 360, 420, 480]
+let posicaoX = []
+let posicaoY = []
+function todasPosicoesSilabas(params) {
+    for (var i=1; i<=8; i++){
+        posicaoX.push(PADRAO*i)
+        posicaoY.push(PADRAO*i)
+    }
+}
 
 var bloco = {
     // coordenadas do ponto dentro do canvas que o bloco vai começar a ser desenhado
@@ -78,7 +84,7 @@ var bloco = {
     },
     desenhaBloco: function(){
         // vai desenhar o bloco da cor ctx.fillStyle e nas coordenadas indicadas em ctx.fillRect
-        spriteBloco.desenhaSpriteBloco(frame, this.x, this.y)
+        spriteBloco.desenhaSpriteBloco(frame, this.x, this.y, PADRAO)
         
     },
     desenhaRastros: function () {
@@ -361,19 +367,19 @@ function mover(tecla){
         if(tecla==38){
             // setinha para CIMA: 38
             // letra W: tecla==119 || tecla==87
-            bloco.atualizaBloco(0, -60)
+            bloco.atualizaBloco(0, -PADRAO)
         } else if(tecla==39){
             // setinha para DIREITA: 39
             // letra D: tecla==100 ||tecla==68
-            bloco.atualizaBloco(60, 0)
+            bloco.atualizaBloco(PADRAO, 0)
         } else if(tecla==40){
             // setinha para BAIXO: 40
             // letra S: tecla==115 || tecla==83
-            bloco.atualizaBloco(0, 60)
+            bloco.atualizaBloco(0, PADRAO)
         } else if(tecla==37){
             // setinha para ESQUERDA: 37
             // letra A: tecla==97 || tecla==65
-            bloco.atualizaBloco(-60, 0)
+            bloco.atualizaBloco(-PADRAO, 0)
         } 
     }else if(tecla == 'click'){
         const btnplay = document.getElementById("btn-play") // botão que também tem a função do enter
@@ -426,21 +432,20 @@ function canvasJogar() {
     ctx.clearRect(0, 0, LARGURA, ALTURA)
     ctx.fillStyle = "#014c78"
     ctx.fillRect(0, 0, LARGURA, ALTURA)
-    comecaJogo.desenha(95, 150)
+    comecaJogo.desenha(95, 150, 406, 300)
 }
 function canvasGanhou() {
-    ganhouJogo.desenha(95, 150)
+    ganhouJogo.desenha(95, 150, 406, 300)
     
 }
 function canvasPerdeu() {
-    perdeuJogo.desenha(95, 150)
+    perdeuJogo.desenha(95, 150, 406, 300)
 
 }
 function canvasJogando() {
     ctx.clearRect(0, 0, LARGURA, ALTURA)
     ctx.fillStyle = "#014c78"
     ctx.fillRect(0, 0, LARGURA, ALTURA)
-    // desenhoDeFundo.desenha()
 
     // imagem do Sprite
     // bg.desenha(0, 0)
@@ -509,6 +514,8 @@ function main(){
 
     // iniciamente, o estado do jogo começa em 'jogar':0
     estadoJogo = estados.jogar
+    // preencher dois arrays com posições possíveis para as sílabas
+    todasPosicoesSilabas()
 
     // isso vai identidicar qual tecla foi clicada
     document.body.addEventListener('keydown', (event) => {

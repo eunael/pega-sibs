@@ -14,12 +14,12 @@ function Sprite(x, y, largura, altura) {
     this.altura = altura;
     this.playerFrame = 0;
 
-    this.desenha = function (xCanvas, yCanvas) {
+    this.desenha = function (xCanvas, yCanvas, larg, alt) {
         // recebe uma imagem, vai captura uma parta dessa imagem que correspondente à sprite e vai desenha no canvas
-        ctx.drawImage(img, this.x, this.y, this.largura, this.altura, xCanvas, yCanvas, this.largura, this.altura)
+        ctx.drawImage(img, this.x, this.y, this.largura, this.altura, xCanvas, yCanvas, larg, alt)
     }
-    this.desenhaSpriteBloco = function (frames, xCanvas, yCanvas) {
-        ctx.drawImage(img, this.x+(this.largura*this.playerFrame), this.y, this.largura, this.altura, xCanvas, yCanvas, this.largura, this.altura)
+    this.desenhaSpriteBloco = function (frames, xCanvas, yCanvas, dimensao) {
+        ctx.drawImage(img, this.x+(this.largura*this.playerFrame), this.y, this.largura, this.altura, xCanvas, yCanvas, dimensao, dimensao)
         if (frames % 4 === 0) {
             // console.log(this.largura*this.playerFrame);
             this.playerFrame = (this.playerFrame + 1) % numSprite;
@@ -28,7 +28,7 @@ function Sprite(x, y, largura, altura) {
 }
 
 var bg = new Sprite(0, 0, 1000, 1000); // desenhando o background do jogo
-var spriteBloco = new Sprite(620, 0, 60, 60)
+var spriteBloco = new Sprite(620, 0, 60, 60) // sprite bloco
 var comecaJogo = new Sprite(20, 650, 406, 300); // antes de começar o jogo
 var perdeuJogo = new Sprite(447, 650, 406, 300); // depois de perder o jogo
 var ganhouJogo = new Sprite(874, 650, 406, 300); // depois de ganhar o jogo
