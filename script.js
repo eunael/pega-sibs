@@ -1,6 +1,6 @@
 var canvas, ctx, img, frame,  // essas variáveis, mais p frente, vão guardar informações p construir o canvas
-ALTURA=600, LARGURA=600, // dimensões do canvas em pixels
-PADRAO=60, // padronizar o tamanho do elementos dentro ddo canvas
+ALTURA = LARGURA = 570, // dimensões do canvas em pixels
+PADRAO = LARGURA / 10, // padronizar o tamanho do elementos dentro ddo canvas
 numSib = 12; // número de sílabas que vão aparecer
 
 // estados que o jogo pode está
@@ -57,8 +57,12 @@ const todasSilabas = [
     ["ZA", "ZE", "ZI", "ZO", "ZU"],
 ]
 // posições possíveis para as sílabas dentro do canvas
-let posicaoX = [60, 120, 180, 240, 300, 360, 420, 480]
-let posicaoY = [60, 120, 180, 240, 300, 360, 420, 480]
+let posicaoX = []
+let posicaoY = []
+for (var i = 1; i < 9; i++){
+    posicaoX.push(PADRAO * i)
+    posicaoY.push(PADRAO * i)
+}
 
 var bloco = {
     // coordenadas do ponto dentro do canvas que o bloco vai começar a ser desenhado
@@ -80,7 +84,7 @@ var bloco = {
     },
     desenhaBloco: function(){
         // vai desenhar a sprite do bloco a cada posição atualizada
-        spriteBloco.desenhaSpriteBloco(frame, this.x, this.y)
+        spriteBloco.desenhaSpriteBloco(frame, this.x, this.y, LARGURA, ALTURA)
         
     },
     /* para discutir se é necessário. é apenas para desenhar o rastro por onde o bloco passou no canvas
@@ -254,7 +258,7 @@ var silabas = {
                     bloco.cor = "#f45728"
                     bloco.corRastro = "#f45728"
                     setTimeout(function() {
-                        estadoJogo = estados.perdeu
+                        // estadoJogo = estados.perdeu
                     }, 10)
                     document.getElementById('btn-play').removeAttribute('disabled')
                     document.getElementById('btn-play').style.backgroundColor = "#00966b"
@@ -267,21 +271,24 @@ var silabas = {
     desenhaSilabas: function(){
         for(var b=0; b<this._sibs.length; b++){
             // vai desenhar cada quadrado com sua respectiva sílaba dentro
-            let sib = this._sibs[b]
+            var tam;
+            var sib = this._sibs[b]
             ctx.fillStyle = sib.color
             ctx.fillRect(sib.x, sib.y, sib.largSilaba, sib.largSilaba)
             
             // alinhar direitinho as sílabas dentro dos seus quadrados
             ctx.fillStyle = "#282828"
             if (todasSilabas[12].indexOf(sib.s) != -1) { // sílabas com Q
-                ctx.font = "25px Arial"
-                ctx.fillText(sib.s, sib.x+3, sib.y+40)
+                tam = 25 * PADRAO / 60
+                ctx.font = `${tam}px Arial`
+                ctx.fillText(sib.s, sib.x+(3*PADRAO/60), sib.y+(40*PADRAO/60))
             } else {
-                ctx.font = "30px Arial"
+                tam = 30 * PADRAO / 60
+                ctx.font = `${tam}px Arial`
                 if (sib.s.indexOf('I') != -1) { // sílabas com I
-                    ctx.fillText(sib.s, sib.x+14, sib.y+40)
+                    ctx.fillText(sib.s, sib.x+(14*PADRAO/60), sib.y+(40*PADRAO/60))
                 } else { // sílabas com A, E, O ou U
-                    ctx.fillText(sib.s, sib.x+9, sib.y+40)
+                    ctx.fillText(sib.s, sib.x+(9*PADRAO/60), sib.y+(40*PADRAO/60))
                 }
             }
         }
@@ -295,6 +302,7 @@ var silabas = {
     }
 }
 
+// animação no plano de fundo
 var desenhoDeFundo = {
     linhas: [],
     tempoInsere: 0,
@@ -317,7 +325,6 @@ var desenhoDeFundo = {
             const linha = this.linhas[i];
             linha.y += 1
             if (linha.y > 800) {
-                // console.log('oi');
                 this.linhas.splice(i, 1)
                 tam--
                 i--
@@ -364,19 +371,19 @@ function mover(tecla){
         if(tecla==38){
             // setinha para CIMA: 38
             // letra W: tecla==119 || tecla==87
-            bloco.atualizaBloco(0, -60)
+            bloco.atualizaBloco(0, -PADRAO)
         } else if(tecla==39){
             // setinha para DIREITA: 39
             // letra D: tecla==100 ||tecla==68
-            bloco.atualizaBloco(60, 0)
+            bloco.atualizaBloco(PADRAO, 0)
         } else if(tecla==40){
             // setinha para BAIXO: 40
             // letra S: tecla==115 || tecla==83
-            bloco.atualizaBloco(0, 60)
+            bloco.atualizaBloco(0, PADRAO)
         } else if(tecla==37){
             // setinha para ESQUERDA: 37
             // letra A: tecla==97 || tecla==65
-            bloco.atualizaBloco(-60, 0)
+            bloco.atualizaBloco(-PADRAO, 0)
         } 
     }else if(tecla == 'click'){
         const btnplay = document.getElementById("btn-play") // botão que também tem a função do enter
@@ -429,14 +436,14 @@ function canvasJogar() {
     ctx.clearRect(0, 0, LARGURA, ALTURA)
     ctx.fillStyle = "#014c78"
     ctx.fillRect(0, 0, LARGURA, ALTURA)
-    comecaJogo.desenha(95, 150)
+    comecaJogo.desenha(LARGURA, ALTURA)
 }
 function canvasGanhou() {
-    ganhouJogo.desenha(95, 150)
+    ganhouJogo.desenha(LARGURA, ALTURA)
     
 }
 function canvasPerdeu() {
-    perdeuJogo.desenha(95, 150)
+    perdeuJogo.desenha(LARGURA, ALTURA)
 
 }
 function canvasJogando() {
@@ -499,6 +506,7 @@ function roda(){
 function main(){
     // esse main vai dar o start em tudo sempre q der um f5
 
+    // if()
     // cria o elemento <canvas></canvas> no html
     canvas = document.createElement('canvas')
     canvas.setAttribute('id', 'canvas')
