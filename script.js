@@ -258,7 +258,7 @@ var silabas = {
                     bloco.cor = "#f45728"
                     bloco.corRastro = "#f45728"
                     setTimeout(function() {
-                        // estadoJogo = estados.perdeu
+                        estadoJogo = estados.perdeu
                     }, 10)
                     document.getElementById('btn-play').removeAttribute('disabled')
                     document.getElementById('btn-play').style.backgroundColor = "#00966b"
