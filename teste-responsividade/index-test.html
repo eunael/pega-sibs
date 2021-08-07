@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Document</title>
+    <style>
+        @media (max-width: 768px) { 
+            .row {
+                width: 100%;
+            }
+            img {
+                width: 100px;
+                height: auto;
+            }
+        }
+        @media (min-width: 1200px){
+            .row {
+                width: 75%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark">
+    <div class="d-flex justify-content-center align-items-center">
+        <div class="row">
+            <div id="telaCanvas" class="col-8">
+            
+            </div>
+            <div class="col-4">
+                <div class="bg-ligth card">
+                    <div class="card-header">
+                        <span><strong>DICA:</strong></span>
+                    </div>
+                    <div class="card-body text-center">
+                        <img src="../imagens/dicas/img-dica-bala.png" alt="..." class="img-fluid rounder" style="max-height: 180px; max-width: 180px;">
+                    </div>
+                </div>
+
+                <div class="bg-ligth card">
+                    <div class="card-header">
+                        <span><strong>USE AS TECLAS:</strong></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="container text-center mb-1">
+                            <button class="btn btn-dark btn-sm">
+                                <span>&uarr;</span>
+                            </button>
+                        </div>
+                        <div class="contianer text-center mb-1">
+                            <div>
+                                <button class="btn btn-dark btn-sm">
+                                    <span>&larr;</span>
+                                </button>
+                                <button class="btn btn-dark btn-sm">
+                                    <span>&darr;</span>
+                                </button>
+                                <button class="btn btn-dark btn-sm">
+                                    <span>&rarr;</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    <script>
+        var largTela = window.visualViewport.width / window.visualViewport.scale
+        
+        if(largTela <= 576){
+            var ALTURA = LARGURA = 360;
+        } else if(largTela > 576 && largTela <= 768){
+            var ALTURA = LARGURA = 420;
+        } else if(largTela > 768 && largTela <= 992){
+            var ALTURA = LARGURA = 480;
+        } else if(largTela > 992 && largTela <= 1200){
+            var ALTURA = LARGURA = 540;
+        } else {
+            var ALTURA = LARGURA = 600;
+        }
+
+        canvas = document.createElement('canvas')
+        canvas.setAttribute('id', 'canvas')
+        canvas.width = LARGURA
+        canvas.height = ALTURA
+        let ctx = canvas.getContext('2d')
+        ctx.fillStyle = "#014c78"
+        ctx.fillRect(0, 0, LARGURA, ALTURA)
+
+        document.getElementById('telaCanvas').appendChild(canvas)
+    </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-size: 100%;
+    border: none;
+    outline: none;
+    font-weight: 300;
+    box-sizing: border-box;
+}
+
+.ambiente {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+}
+.tela {
+    width: 100%;
+}

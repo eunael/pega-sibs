@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="estilo.css">
+    <title>Document</title>
+</head>
+<body>
+    <main class="ambiente">
+        <article class="tela">
+            <canvas id="canvas"></canvas>
+        </article>
+        <article class="painel">
+            <div class="controles">imagens</div>
+            <div class="controles">botão de play</div>
+            <div class="controles">botões de jogar</div>
+        </article>
+    </main>
+    <script>
+        window.onresize = function () {
+            let dimen = 600;
+            if(window.innerWidth < window.innerHeight){
+                if(window.innerWidth < 480){
+                    dimen = 300
+                } else if(window.innerWidth < 768){
+                    dimen = 480
+                }
+                console.log(dimen);
+            } else if(window.innerWidth > window.innerHeight) {
+                if(window.innerHeight < 480){
+                    dimen = 300
+                } else if(window.innerHeight < 768){
+                    dimen = 480
+                }
+                console.log(dimen);
+            }
+            let canvas = document.getElementById('canvas')
+            canvas.width = dimen;
+            canvas.height = dimen;
+            let ctx = canvas.getContext("2d")
+            ctx.fillStyle = "green";
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+        }
+    </script>
+</body>
+</html>

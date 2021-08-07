@@ -1,8 +1,26 @@
-var canvas, ctx, img, frame,  // essas variáveis, mais p frente, vão guardar informações p construir o canvas
-ALTURA = LARGURA = 570, // dimensões do canvas em pixels
-PADRAO = LARGURA / 10, // padronizar o tamanho do elementos dentro ddo canvas
-numSib = 12; // número de sílabas que vão aparecer
+var canvas, ctx, img, frame;  // essas variáveis, mais p frente, vão guardar informações p construir o canvas
+// var ALTURA = LARGURA = window.innerHeight < 600 ? window.innerHeight : 600; // dimensões do canvas em pixels
+var largTela = window.visualViewport.width / window.visualViewport.scale
+console.log(largTela);
+if(largTela <= 576){
+    console.log('aaa');
+    var ALTURA = LARGURA = 360;
+} else if(largTela > 576 && largTela <= 768){
+    var ALTURA = LARGURA = 420;
+    console.log('768');
+} else if(largTela > 768 && largTela <= 992){
+    var ALTURA = LARGURA = 480;
+} else if(largTela > 992 && largTela <= 1200){
+    var ALTURA = LARGURA = 540;
+} else {
+    var ALTURA = LARGURA = 600;
+}
+console.log("inner "+window.innerWidth);
+console.log("viewport "+largTela);
 
+var PADRAO = LARGURA / 10, // padronizar o tamanho do elementos dentro ddo canvas
+numSib = 12; // número de sílabas que vão aparecer
+// console.log(ALTURA, LARGURA, window.innerHeight);
 // estados que o jogo pode está
 const estados = { 
     'jogar': 0,
