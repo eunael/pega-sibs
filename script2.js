@@ -146,12 +146,17 @@ function main() {
 
     document.body.addEventListener('keydown', (event) => {
         var num = event.keyCode
-        
         mover(num)
     })
     document.getElementById('canvas').addEventListener('click', function() {
         mover('click')
     })
+    document.querySelectorAll(['.direcoes']).forEach(element => {
+        element.addEventListener('mousedown', function() {
+            let num = Number(element.getAttribute('direc'))
+            mover(num)
+        })
+    });
 
     roda()
 }
