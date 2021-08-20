@@ -1,0 +1,9 @@
+{
+    "palavras": [
+        {"imagem": "img-dica-bala.png", "word": ["BA", "LA"]},
+        {"imagem": "img-dica-mala.png", "word": ["MA", "LA"]},
+        {"imagem": "img-dica-bolo.png", "word": ["BO", "LO"]},
+        {"imagem": "img-dica-sapato.png", "word": ["SA", "PA", "TO"]},
+        {"imagem": "img-dica-telefone.png", "word": ["TE", "LE", "FO", "NE"]}
+    ]
+}
