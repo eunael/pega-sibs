@@ -27,6 +27,7 @@ function linhas(){
 
 function mover(tecla) {
     let img = document.getElementById('img-dica');
+    let dir_img = "imagens/dicas/"
 
     if(estadoJogo.getState() == "jogando"){
         if(tecla==38){
@@ -56,15 +57,15 @@ function mover(tecla) {
 
             let palavra = silabas.getPalavra()
 
-            let img_src = img.getAttribute('src') + palavra.imagem
-            img.setAttribute('src', img_src)
+            // let img_src = img.getAttribute('src') + palavra.imagem
+            img.setAttribute('src', `${dir_img}${palavra.imagem}`)
             img.style.display = 'block'
 
             estadoJogo.setState(1)
         } else if ((estadoJogo.getState() == "ganhou" || estadoJogo.getState() == "perdeu")) {
-            let img_src_split = img.getAttribute('src').split('/')
-            let img_src = `${img_src_split[0]}/${img_src_split[1]}/`
-            img.setAttribute('src', img_src)
+            // let img_src_split = img.getAttribute('src').split('/')
+            // let img_src = `${img_src_split[0]}/${img_src_split[1]}/`
+            img.setAttribute('src', "")
             img.style.display = "none"
             
             estadoJogo.setState(0)
@@ -155,6 +156,7 @@ function main() {
         element.addEventListener('mousedown', function() {
             let num = Number(element.getAttribute('direc'))
             mover(num)
+            console.log(num);
         })
     });
 
