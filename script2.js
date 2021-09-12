@@ -1,9 +1,10 @@
-import { Bloco } from './components/Bloco.js'
-import { Silabas } from './components/Silabas.js'
+import { Bloco } from './components/Bloco.js';
+import { Silabas } from './components/Silabas.js';
 import { Sprite } from './components/Sprite.js';
-import { GameState } from './utils/estadoJogo.js'
+import { GameState } from './utils/estadoJogo.js';
+import {configPosicoes} from './utils/silabas.js';
 
-let canvas, ctx, frame=1, plano=600, padrao=60, bloco, spriteBloco, silabas,
+let canvas, ctx, frame=1, plano=600, padrao=plano/10, bloco, spriteBloco, silabas,
 comecaJogo, perdeuJogo, ganhouJogo, estadoJogo;
 
 function linhas(){
@@ -33,19 +34,19 @@ function mover(tecla) {
         if(tecla==38){
             // setinha para CIMA: 38
             // letra W: tecla==119 || tecla==87
-            bloco.atualizaBloco(0, -60)
+            bloco.atualizaBloco(0, -padrao)
         } else if(tecla==39){
             // setinha para DIREITA: 39
             // letra D: tecla==100 ||tecla==68
-            bloco.atualizaBloco(60, 0)
+            bloco.atualizaBloco(padrao, 0)
         } else if(tecla==40){
             // setinha para BAIXO: 40
             // letra S: tecla==115 || tecla==83
-            bloco.atualizaBloco(0, 60)
+            bloco.atualizaBloco(0, padrao)
         } else if(tecla==37){
             // setinha para ESQUERDA: 37
             // letra A: tecla==97 || tecla==65
-            bloco.atualizaBloco(-60, 0)
+            bloco.atualizaBloco(-padrao, 0)
         }
     } else if(tecla=='click') {
         if(estadoJogo.getState() == "jogar"){
@@ -92,7 +93,7 @@ function desenha(){
         ctx.fillStyle = "#014c78"
 
         ctx.fillRect(0, 0, plano, plano)
-        comecaJogo.desenha(95, 150)
+        comecaJogo.desenha((406*plano/600)/4, (300*plano/600)/2)
     } else if(estadoJogo.getState() == "jogando"){
         ctx.clearRect(0, 0, plano, plano)
         ctx.fillStyle = "#014c78"
@@ -104,15 +105,9 @@ function desenha(){
         
         bloco.desenhaBloco(frame)
     } else if (estadoJogo.getState()  == "ganhou") {
-        ctx.clearRect(0, 0, plano, plano)
-        ctx.fillStyle = "#014c78"
-        ctx.fillRect(0, 0, plano, plano)
-        ganhouJogo.desenha(95, 150)
+        ganhouJogo.desenha((406*plano/600)/4, (300*plano/600)/2)
     } else if (estadoJogo.getState()  == "perdeu") {
-        ctx.clearRect(0, 0, plano, plano)
-        ctx.fillStyle = "#014c78"
-        ctx.fillRect(0, 0, plano, plano)
-        perdeuJogo.desenha(95, 150)
+        perdeuJogo.desenha((406*plano/600)/4, (300*plano/600)/2)
     }
 }
 
@@ -131,6 +126,7 @@ function main() {
     canvas.style.border = "1px solid #282828";
     ctx = canvas.getContext("2d")
 
+    configPosicoes(plano)
     estadoJogo = new GameState()
     estadoJogo.setState(0)
 

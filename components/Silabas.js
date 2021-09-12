@@ -108,21 +108,22 @@ export function Silabas(dimenBloco, stateGame, canvas){
                 ctx.fillStyle = sib.color
                 ctx.fillRect(sib.x, sib.y, sib.largSilaba, sib.largSilaba)
                 ctx.fillStyle = "#282828"
-                ctx.font = "25px Arial"
-                ctx.fillText(sib.s, sib.x+3, sib.y+40)
-                /*
-                    if (todasSilabas[12].indexOf(sib.s) != -1) { // sílabas com Q
-                        ctx.font = "25px Arial"
-                        ctx.fillText(sib.s, sib.x+3, sib.y+40)
-                    } else {
-                        ctx.font = "30px Arial"
-                        if (sib.s.indexOf('I') != -1) { // sílabas com I
-                            ctx.fillText(sib.s, sib.x+14, sib.y+40)
-                        } else { // sílabas com A, E, O ou U
-                            ctx.fillText(sib.s, sib.x+9, sib.y+40)
-                        }
+
+                var sizeFont = 25 * dimenBloco / 60
+                // ctx.fillText(sib.s, sib.x+3, sib.y+40)
+                if (sib.s.includes("Q")) { // sílabas com Q
+                    ctx.font = `${sizeFont}px Arial`
+                    // ctx.font = "25px Arial"
+                    ctx.fillText(sib.s, sib.x+(3*dimenBloco/60), sib.y+(40*dimenBloco/60))
+                } else {
+                    // var sizeFont = 30 * dimenBloco / 60
+                    ctx.font = `${sizeFont}px Arial`
+                    if (sib.s.includes('I')) { // sílabas com I
+                        ctx.fillText(sib.s, sib.x+(15*dimenBloco/60), sib.y+(40*dimenBloco/60))
+                    } else { // sílabas com A, E, O ou U
+                        ctx.fillText(sib.s, sib.x+(12*dimenBloco/60), sib.y+(40*dimenBloco/60))
                     }
-                */
+                }
             })
         },
         resetaSilabas: (all=false) => {

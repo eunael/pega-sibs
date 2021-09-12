@@ -27,8 +27,17 @@ const todasSilabas = [
     ["XA", "XE", "XI", "XO", "XU"],
     ["ZA", "ZE", "ZI", "ZO", "ZU"],
 ]
-let posicaoX = [60, 120, 180, 240, 300, 360, 420, 480]
-let posicaoY = [60, 120, 180, 240, 300, 360, 420, 480]
+let posicaoX = []
+let posicaoY = []
+
+function configPosicoes(referencia){
+    let ref = referencia/10
+    for (let index = ref; index <= ref*8; index+=ref) {
+        posicaoX.push(index)
+        posicaoY.push(index)
+    }
+    console.log(posicaoX, posicaoY);
+}
 
 function sorteiaPalavra() {
     let qnt_palavras = parseInt(palavras.length)
@@ -66,4 +75,4 @@ function sorteiaPosicao(){
     return [posx, posy]
 }
 
-export { sorteiaPalavra, sorteiaSilaba, sorteiaPosicao };
+export { configPosicoes, sorteiaPalavra, sorteiaSilaba, sorteiaPosicao };
