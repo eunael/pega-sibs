@@ -217,7 +217,7 @@ function main() {
             mover(num)
         })
     });
-
+    console.log('iniciou');
     roda()
 }
 main()
