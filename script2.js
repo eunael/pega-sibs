@@ -2,7 +2,6 @@ import { Bloco } from './components/Bloco.js';
 import { Silabas } from './components/Silabas.js';
 import { Sprite } from './components/Sprite.js';
 import { GameState } from './utils/estadoJogo.js';
-import {configPosicoes} from './utils/silabas.js';
 
 let canvas, ctx, frame=1, plano, padrao, bloco, spriteBloco, silabas,
 comecaJogo, perdeuJogo, ganhouJogo, estadoJogo;
@@ -186,8 +185,6 @@ function main() {
     canvas.height = plano
     canvas.style.border = "1px solid #282828";
     ctx = canvas.getContext("2d")
-
-    // configPosicoes(plano)
 
     // Objetos
     estadoJogo = new GameState()

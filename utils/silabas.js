@@ -30,14 +30,6 @@ const todasSilabas = [
 let posicaoX = [60, 120, 180, 240, 300, 360, 420, 480]
 let posicaoY = [60, 120, 180, 240, 300, 360, 420, 480]
 
-function configPosicoes(referencia){
-    let ref = referencia/10
-    for (let index = ref; index <= ref*8; index+=ref) {
-        posicaoX.push(index)
-        posicaoY.push(index)
-    }
-}
-
 function sorteiaPalavra() {
     let qnt_palavras = parseInt(palavras.length)
     let sort = Math.floor(Math.random() * qnt_palavras)
