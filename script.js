@@ -317,7 +317,6 @@ var desenhoDeFundo = {
             const linha = this.linhas[i];
             linha.y += 1
             if (linha.y > 800) {
-                // console.log('oi');
                 this.linhas.splice(i, 1)
                 tam--
                 i--
@@ -528,7 +527,6 @@ function main(){
         element.addEventListener('mousedown', function() {
             let num = Number(element.getAttribute('direc'))
             mover(num)
-            // console.log(num);
         })
     });
 

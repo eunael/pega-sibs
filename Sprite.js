@@ -21,7 +21,6 @@ function Sprite(x, y, largura, altura) {
     this.desenhaSpriteBloco = function (frames, xCanvas, yCanvas) {
         ctx.drawImage(img, this.x+(this.largura*this.playerFrame), this.y, this.largura, this.altura, xCanvas, yCanvas, this.largura, this.altura)
         if (frames % 4 === 0) {
-            // console.log(this.largura*this.playerFrame);
             this.playerFrame = (this.playerFrame + 1) % numSprite;
         }
     }

@@ -1,6 +1,6 @@
 import { sorteiaPalavra, sorteiaSilaba, sorteiaPosicao } from '../utils/silabas.js'
 
-export function Silabas(dimenBloco, stateGame, canvas){
+export function Silabas(stateGame, canvas){
     let objs_sibs = [],
         sibs_certas = [],
         sibs_aleatorias = [],
@@ -23,8 +23,8 @@ export function Silabas(dimenBloco, stateGame, canvas){
                     color: "#f2f2f2",
                     x: coord[0],
                     y: coord[1],
-                    largSilaba: dimenBloco,
-                    altSilaba: dimenBloco,
+                    // largSilaba: dimenBloco,
+                    // altSilaba: dimenBloco,
                     passou: false,
                     is_essa: true,
                 }
@@ -51,8 +51,8 @@ export function Silabas(dimenBloco, stateGame, canvas){
                     color: "#f2f2f2",
                     x: coord[0],
                     y: coord[1],
-                    largSilaba: dimenBloco,
-                    altSilaba: dimenBloco,
+                    // largSilaba: dimenBloco,
+                    // altSilaba: dimenBloco,
                     passou: false,
                     is_essa: false,
                 }
@@ -61,10 +61,10 @@ export function Silabas(dimenBloco, stateGame, canvas){
                 sibs_aleatorias.push(objeto)
             }
         },
-        atualiza: (blocoX, blocoY) => {
+        atualiza: (blocoX, blocoY, dimenPlano) => {
             objs_sibs.forEach((sib, index) => {
                 var esta_na_ordem=true, sib_certa, sib_certa_anterior, index_sib_certa;
-                if(blocoX == sib.x && blocoY == sib.y){
+                if(blocoX == (dimenPlano*sib.x/600) && blocoY == (dimenPlano*sib.y/600)){
                     sib.passou = true
                     if(sib.is_essa){
                         sib_certa = sibs_certas.find(elem => elem.s == sib.s)
@@ -101,12 +101,12 @@ export function Silabas(dimenBloco, stateGame, canvas){
                 }
             })
         },
-        desenha: () => {
-            // console.log(objs_sibs);
+        desenha: (dimenBloco, dimenPlano) => {
             let ctx = canvas.getContext('2d')
             objs_sibs.forEach(sib => {
+                let coordX = (dimenPlano*sib.x/600), coordY = (dimenPlano*sib.y/600);
                 ctx.fillStyle = sib.color
-                ctx.fillRect(sib.x, sib.y, sib.largSilaba, sib.largSilaba)
+                ctx.fillRect(coordX, coordY, dimenBloco, dimenBloco)
                 ctx.fillStyle = "#282828"
 
                 var sizeFont = 25 * dimenBloco / 60
@@ -114,14 +114,14 @@ export function Silabas(dimenBloco, stateGame, canvas){
                 if (sib.s.includes("Q")) { // sílabas com Q
                     ctx.font = `${sizeFont}px Arial`
                     // ctx.font = "25px Arial"
-                    ctx.fillText(sib.s, sib.x+(3*dimenBloco/60), sib.y+(40*dimenBloco/60))
+                    ctx.fillText(sib.s, coordX+(3*dimenBloco/60), coordY+(40*dimenBloco/60))
                 } else {
                     // var sizeFont = 30 * dimenBloco / 60
                     ctx.font = `${sizeFont}px Arial`
                     if (sib.s.includes('I')) { // sílabas com I
-                        ctx.fillText(sib.s, sib.x+(15*dimenBloco/60), sib.y+(40*dimenBloco/60))
+                        ctx.fillText(sib.s, coordX+(15*dimenBloco/60), coordY+(40*dimenBloco/60))
                     } else { // sílabas com A, E, O ou U
-                        ctx.fillText(sib.s, sib.x+(12*dimenBloco/60), sib.y+(40*dimenBloco/60))
+                        ctx.fillText(sib.s, coordX+(12*dimenBloco/60), coordY+(40*dimenBloco/60))
                     }
                 }
             })

@@ -27,8 +27,8 @@ const todasSilabas = [
     ["XA", "XE", "XI", "XO", "XU"],
     ["ZA", "ZE", "ZI", "ZO", "ZU"],
 ]
-let posicaoX = []
-let posicaoY = []
+let posicaoX = [60, 120, 180, 240, 300, 360, 420, 480]
+let posicaoY = [60, 120, 180, 240, 300, 360, 420, 480]
 
 function configPosicoes(referencia){
     let ref = referencia/10
@@ -36,7 +36,6 @@ function configPosicoes(referencia){
         posicaoX.push(index)
         posicaoY.push(index)
     }
-    console.log(posicaoX, posicaoY);
 }
 
 function sorteiaPalavra() {
