@@ -66,4 +66,4 @@ function sorteiaPosicao(){
     return [posx, posy]
 }
 
-export { configPosicoes, sorteiaPalavra, sorteiaSilaba, sorteiaPosicao };
+export { sorteiaPalavra, sorteiaSilaba, sorteiaPosicao };
