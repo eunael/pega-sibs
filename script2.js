@@ -81,7 +81,7 @@ function linhas(){
 
 function mover(tecla) {
     let img = document.getElementById('img-dica');
-    let dir_img = "../imagens/dicas/"
+    let dir_img = "./imagens/dicas/"
 
     if(estadoJogo.getState() == "jogando"){
         if(tecla==38){
