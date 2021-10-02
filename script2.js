@@ -4,7 +4,7 @@ import { Sprite } from './components/Sprite.js';
 import { GameState } from './utils/estadoJogo.js';
 
 let canvas, ctx, frame=1, plano, padrao, bloco, spriteBloco, silabas,
-comecaJogo, perdeuJogo, ganhouJogo, estadoJogo;
+comecaJogo, perdeuJogo, ganhouJogo, estadoJogo, dir_img = "./imagens/dicas/";
 
 function detectar_mobile() { 
     if( navigator.userAgent.match(/Android/i)
@@ -22,43 +22,45 @@ function detectar_mobile() {
     }
 }
 
-function setSizeMobile() {
-    if (screen.width > screen.height){
-        return screen.height
-    }
+/* setar um tamanho do canvas para cada tamanho de tela
+// function setSizeMobile() {
+//     if (screen.width > screen.height){
+//         return screen.height
+//     }
 
-    return 300
-}
+//     return 300
+// }
 
-function setSizePC(){
-    let width = window.innerWidth
-    let val;
-    if (width < 576){
-        val = 300
-    } else if (width < 768) {
-        val = 360
-    } else if (width < 992) {
-        val = 420
-    } else {
-        val = 600
-    }
+// function setSizePC(){
+//     let width = window.innerWidth
+//     let val;
+//     if (width < 576){
+//         val = 300
+//     } else if (width < 768) {
+//         val = 360
+//     } else if (width < 992) {
+//         val = 420
+//     } else {
+//         val = 600
+//     }
 
-    return val
-}
+//     return val
+// }
 
 
-window.addEventListener('resize',  () => {
-    if(detectar_mobile()){
-        plano = setSizeMobile()
-    } else {
-        plano = setSizePC()
-    }
-    padrao = plano / 10
-    canvas.width = plano
-    canvas.height = plano
-    let blocoAtt = bloco.getAtributos()
-    bloco.atualizaBloco(blocoAtt.quadroX*padrao, blocoAtt.quadroY*padrao, plano, padrao, true)
-})
+// window.addEventListener('resize',  () => {
+//     if(detectar_mobile()){
+//         plano = setSizeMobile()
+//     } else {
+//         plano = setSizePC()
+//     }
+//     padrao = plano / 10
+//     canvas.width = plano
+//     canvas.height = plano
+//     let blocoAtt = bloco.getAtributos()
+//     bloco.atualizaBloco(blocoAtt.quadroX*padrao, blocoAtt.quadroY*padrao, plano, padrao, true)
+// })
+*/
 
 function linhas(){
     ctx.strokeStyle="#262626"
@@ -81,7 +83,6 @@ function linhas(){
 
 function mover(tecla) {
     let img = document.getElementById('img-dica');
-    let dir_img = "./imagens/dicas/"
 
     if(estadoJogo.getState() == "jogando"){
         if(tecla==38){
@@ -113,14 +114,13 @@ function mover(tecla) {
 
             // let img_src = img.getAttribute('src') + palavra.imagem
             img.setAttribute('src', `${dir_img}${palavra.imagem}`)
-            img.style.display = 'block'
+            // img.style.display = 'block'
 
             estadoJogo.setState(1)
         } else if ((estadoJogo.getState() == "ganhou" || estadoJogo.getState() == "perdeu")) {
             // let img_src_split = img.getAttribute('src').split('/')
             // let img_src = `${img_src_split[0]}/${img_src_split[1]}/`
-            img.setAttribute('src', "")
-            img.style.display = "none"
+            img.setAttribute('src', `${dir_img}vamos-la.png`)
             
             estadoJogo.setState(0)
         }
@@ -173,11 +173,14 @@ function roda() {
 
 function main() {
     if(detectar_mobile()){
-        plano = setSizeMobile()
+        plano = 360
     } else {
-        plano = setSizePC()
+        plano = 600
     }
     padrao = plano / 10
+
+    let img = document.getElementById('img-dica')
+    img.setAttribute('src', `${dir_img}vamos-la.png`)
 
     canvas = document.createElement('canvas')
     canvas.setAttribute('id', 'canvas')
