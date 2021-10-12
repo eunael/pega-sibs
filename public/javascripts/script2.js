@@ -4,7 +4,7 @@ import { Sprite } from './components/Sprite.js';
 import { GameState } from './utils/estadoJogo.js';
 
 let canvas, ctx, frame=1, plano, padrao, bloco, spriteBloco, silabas,
-comecaJogo, perdeuJogo, ganhouJogo, estadoJogo, dir_img = "./imagens/dicas/";
+comecaJogo, perdeuJogo, ganhouJogo, estadoJogo, dir_img = "../images/dicas/";
 
 function detectar_mobile() { 
     if( navigator.userAgent.match(/Android/i)
@@ -22,31 +22,22 @@ function detectar_mobile() {
     }
 }
 
-/* setar um tamanho do canvas para cada tamanho de tela
-// function setSizeMobile() {
-//     if (screen.width > screen.height){
-//         return screen.height
-//     }
+/* setar um tamanho do canvas para cada tamanho de tela*/
+function setSizePC(){
+    let width = window.innerWidth
+    let val;
+    if (width < 576){
+        val = 300
+    } else if (width < 768) {
+        val = 360
+    } else if (width < 992) {
+        val = 420
+    } else {
+        val = 600
+    }
 
-//     return 300
-// }
-
-// function setSizePC(){
-//     let width = window.innerWidth
-//     let val;
-//     if (width < 576){
-//         val = 300
-//     } else if (width < 768) {
-//         val = 360
-//     } else if (width < 992) {
-//         val = 420
-//     } else {
-//         val = 600
-//     }
-
-//     return val
-// }
-
+    return val
+}
 
 // window.addEventListener('resize',  () => {
 //     if(detectar_mobile()){
@@ -60,7 +51,7 @@ function detectar_mobile() {
 //     let blocoAtt = bloco.getAtributos()
 //     bloco.atualizaBloco(blocoAtt.quadroX*padrao, blocoAtt.quadroY*padrao, plano, padrao, true)
 // })
-*/
+/** */
 
 function linhas(){
     ctx.strokeStyle="#262626"
@@ -175,7 +166,15 @@ function main() {
     if(detectar_mobile()){
         plano = 360
     } else {
-        plano = 600
+        plano = setSizePC()
+        window.addEventListener('resize',  () => {
+            plano = setSizePC()
+            padrao = plano / 10
+            canvas.width = plano
+            canvas.height = plano
+            let blocoAtt = bloco.getAtributos()
+            bloco.atualizaBloco(blocoAtt.quadroX*padrao, blocoAtt.quadroY*padrao, plano, padrao, true)
+        })
     }
     padrao = plano / 10
 
@@ -217,7 +216,7 @@ function main() {
             mover(num)
         })
     });
-    console.log('iniciou');
+    
     roda()
 }
 main()
