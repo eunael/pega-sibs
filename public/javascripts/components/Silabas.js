@@ -126,6 +126,36 @@ export function Silabas(stateGame, canvas){
                 }
             })
         },
+        desenhaSibsPassou: (dimenBloco, dimenPlano) => {
+            let sibsPassou = objs_sibs.filter((val) => {
+                if(val.passou){
+                    return val;
+                }
+            })
+            let ctx = canvas.getContext('2d')
+            sibsPassou.forEach(sib => {
+                let coordX = (dimenPlano*sib.x/600), coordY = (dimenPlano*sib.y/600);
+                ctx.fillStyle = sib.color
+                ctx.fillRect(coordX, coordY, dimenBloco, dimenBloco)
+                ctx.fillStyle = "#282828"
+
+                var sizeFont = 25 * dimenBloco / 60
+                // ctx.fillText(sib.s, sib.x+3, sib.y+40)
+                if (sib.s.includes("Q")) { // sílabas com Q
+                    ctx.font = `${sizeFont}px Arial`
+                    // ctx.font = "25px Arial"
+                    ctx.fillText(sib.s, coordX+(3*dimenBloco/60), coordY+(40*dimenBloco/60))
+                } else {
+                    // var sizeFont = 30 * dimenBloco / 60
+                    ctx.font = `${sizeFont}px Arial`
+                    if (sib.s.includes('I')) { // sílabas com I
+                        ctx.fillText(sib.s, coordX+(15*dimenBloco/60), coordY+(40*dimenBloco/60))
+                    } else { // sílabas com A, E, O ou U
+                        ctx.fillText(sib.s, coordX+(12*dimenBloco/60), coordY+(40*dimenBloco/60))
+                    }
+                }
+            })
+        },
         resetaSilabas: (all=false) => {
             if(all){
                 objs_sibs = []

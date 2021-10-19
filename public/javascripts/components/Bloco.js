@@ -1,5 +1,5 @@
 export function Bloco(){
-    var x=0, y=0, quadroX=0, quadroY=0, tamanho;
+    var x=0, y=0, quadroX=0, quadroY=0, tamanho, vidas=3;
     return {
         atualizaBloco: (coordX, coordY, dimenPlano, dimenBloco, setPosi=false) => {
             if(setPosi){
@@ -20,13 +20,21 @@ export function Bloco(){
             sprite.desenhaSpriteBloco(frame, x, y, dimenBloco)
         },
 
-        resetaBloco: () => {
-            x = y = 0
+        perderVida: () => {
+            vidas--;
+            return vidas;
+        },
+
+        resetaBloco: (all=false) => {
+            x = y = quadroX = quadroY = 0
+            if(all){
+                vidas = 3
+            }
         },
 
         getAtributos: () => {
             return {
-                x: x, y: y, quadroX:quadroX, quadroY:quadroY, tamanho: tamanho
+                x: x, y: y, quadroX: quadroX, quadroY: quadroY, tamanho: tamanho, vidas: vidas
             }
         }
     }

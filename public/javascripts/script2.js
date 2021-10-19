@@ -4,7 +4,8 @@ import { Sprite } from './components/Sprite.js';
 import { GameState } from './utils/estadoJogo.js';
 
 let canvas, ctx, frame=1, plano, padrao, bloco, spriteBloco, silabas,
-comecaJogo, perdeuJogo, ganhouJogo, estadoJogo, dir_img = "../images/dicas/";
+comecaJogo, perdeuJogo, ganhouJogo, estadoJogo, dir_img = "../images/dicas/",
+tempoMostrvidas = 150;
 
 function detectar_mobile() { 
     if( navigator.userAgent.match(/Android/i)
@@ -95,7 +96,7 @@ function mover(tecla) {
         }
     } else if(tecla=='click') {
         if(estadoJogo.getState() == "jogar"){
-            bloco.resetaBloco()
+            bloco.resetaBloco(true)
             silabas.resetaSilabas(true)
 
             silabas.constroiPalavra()
@@ -108,12 +109,23 @@ function mover(tecla) {
             // img.style.display = 'block'
 
             estadoJogo.setState(1)
-        } else if ((estadoJogo.getState() == "ganhou" || estadoJogo.getState() == "perdeu")) {
+        } else if (estadoJogo.getState() == "ganhou") {
             // let img_src_split = img.getAttribute('src').split('/')
             // let img_src = `${img_src_split[0]}/${img_src_split[1]}/`
+
             img.setAttribute('src', `${dir_img}vamos-la.png`)
-            
             estadoJogo.setState(0)
+        } else if (estadoJogo.getState() == "perdeu") {
+            let numVida = bloco.perderVida()
+            if (numVida > 0) {
+                bloco.resetaBloco()
+                silabas.resetaSilabas()
+                estadoJogo.setState(1)
+            } else {
+                img.setAttribute('src', `${dir_img}vamos-la.png`)
+                estadoJogo.setState(0)
+            }
+
         }
     }
 }
@@ -123,8 +135,15 @@ function atualiza(){
         frame++;
         let infoBloco = bloco.getAtributos()
         silabas.atualiza(infoBloco.x, infoBloco.y, plano)
-    } else {
+        if (tempoMostrvidas > 0) {
+            tempoMostrvidas--;
+        }
+    } else if(estadoJogo.getState() == "jogar"){
         frame = 0
+        tempoMostrvidas = 150
+    } else {
+        frame++
+        tempoMostrvidas = 150
     }
 }
 
@@ -137,7 +156,9 @@ function desenha(){
         ctx.fillStyle = "#014c78"
 
         ctx.fillRect(0, 0, plano, plano)
+
         comecaJogo.desenha((406*plano/600)/4, (300*plano/600)/2, plano)
+
     } else if(estadoJogo.getState() == "jogando"){
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         ctx.fillStyle = "#014c78"
@@ -146,12 +167,58 @@ function desenha(){
         silabas.desenha(padrao, plano)
         
         linhas()
+
+        if(tempoMostrvidas > 0){
+            let numVida = bloco.getAtributos().vidas
+            ctx.fillStyle = "#e61515"
+            for (let i = 1; i <= numVida; i++) {
+                let paramX = 30 * plano / 600
+                let paramY = 20 * plano / 600
+                let x = plano - (paramX*i)
+                ctx.beginPath();
+                ctx.arc(x, paramY, 13*padrao/60, 0, 2*Math.PI);
+                ctx.fill()
+            } 
+        }
         
         bloco.desenhaBloco(frame, padrao, spriteBloco)
+
     } else if (estadoJogo.getState()  == "ganhou") {
         ganhouJogo.desenha((406*plano/600)/4, (300*plano/600)/2, plano)
+
+        ctx.fillStyle = "#008D1F"
+        let tamX = (250)*plano/600, tamY = (70)*plano/600;
+        ctx.fillRect((175*plano/600), (475*plano/600), tamX, tamY)
+
+        var sizeFont = 28 * plano / 600
+        var frase = `novo jogo`
+        ctx.fillStyle = "#ffffff"
+        ctx.font = `${sizeFont}px Bouncy-Black`
+        ctx.fillText(frase, (223*plano/600), (517*plano/600))
+
     } else if (estadoJogo.getState()  == "perdeu") {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.fillStyle = "#014c78"
+        ctx.fillRect(0, 0, plano, plano)
+
+        silabas.desenhaSibsPassou(padrao, plano)
+
+        bloco.desenhaBloco(frame, padrao, spriteBloco)
+
         perdeuJogo.desenha((406*plano/600)/4, (300*plano/600)/2, plano)
+
+        ctx.fillStyle = "#008D1F"
+        let tamX = (250)*plano/600, tamY = (70)*plano/600;
+        ctx.fillRect((175*plano/600), (475*plano/600), tamX, tamY)
+
+        var sizeFont = 28 * plano / 600
+        var frase = `Restam    vidas`
+        var numDeVidas = `${bloco.getAtributos().vidas - 1}`
+        ctx.fillStyle = "#ffffff"
+        ctx.font = `${sizeFont}px Bouncy-Black`
+        ctx.fillText(frase, (183*plano/600), (517*plano/600))
+        ctx.font = `${sizeFont}px Arial`
+        ctx.fillText(numDeVidas, (308*plano/600), (518*plano/600))
     }
 }
 
