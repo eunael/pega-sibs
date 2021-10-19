@@ -1,4 +1,4 @@
-import { sorteiaPalavra, sorteiaSilaba, sorteiaPosicao } from '../utils/silabas.js'
+import { sorteiaPalavra, sorteiaSilaba, sorteiaPosicao, sorteiaSilabaMix } from '../utils/silabas.js'
 
 export function Silabas(stateGame, canvas){
     let objs_sibs = [],
@@ -40,6 +40,34 @@ export function Silabas(stateGame, canvas){
                 do {
                     silaba = sorteiaSilaba()
                     sib_existe = objs_sibs.some((obj) => obj.s === silaba || silaba==null)
+                } while(sib_existe)
+                do {
+                    coord = sorteiaPosicao()
+                    coord_existe = objs_sibs.some((obj) => obj.x==coord[0] && obj.y==coord[1])
+                } while (coord_existe)
+
+                const objeto = {
+                    s: silaba,
+                    color: "#f2f2f2",
+                    x: coord[0],
+                    y: coord[1],
+                    // largSilaba: dimenBloco,
+                    // altSilaba: dimenBloco,
+                    passou: false,
+                    is_essa: false,
+                }
+
+                objs_sibs.push(objeto)
+                sibs_aleatorias.push(objeto)
+            }
+        },
+        constroiSilabasMix: () => {
+            var silaba, sib_existe=false, coord, coord_existe=false;
+            let palav = palavra.word.join("")
+            for (var i = 0; i < (numSib + Math.trunc(palavra.word.length / 3)); i++){
+                do {
+                    silaba = sorteiaSilabaMix(palav)
+                    sib_existe = sibs_certas.some((obj) => obj.s === silaba || silaba==null)
                 } while(sib_existe)
                 do {
                     coord = sorteiaPosicao()

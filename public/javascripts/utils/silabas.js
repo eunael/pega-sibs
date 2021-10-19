@@ -3,8 +3,11 @@ const palavras = [
     {'imagem': "img-dica-bala.png", 'word': ['BA', 'LA']},
     {'imagem': "img-dica-mala.png", 'word': ['MA', 'LA']},
     {'imagem': "img-dica-bolo.png", 'word': ['BO', 'LO']},
+    {'imagem': "img-dica-boneca.png", 'word': ['BO', 'NE', 'CA']},
+    {'imagem': "img-dica-janela.png", 'word': ['JA', 'NE', 'LA']},
     {'imagem': "img-dica-sapato.png", 'word': ['SA', 'PA', 'TO']},
-    {'imagem': "img-dica-telefone.png", 'word': ['TE', 'LE', 'FO', 'NE']}
+    {'imagem': "img-dica-capacete.png", 'word': ['CA', 'PA', 'CE', 'TE']},
+    {'imagem': "img-dica-telefone.png", 'word': ['TE', 'LE', 'FO', 'NE']},
 ]
 const todasSilabas = [
     ["BA", "BE", "BI", "BO", "BU"],
@@ -52,6 +55,22 @@ function sorteiaSilaba(){
     return sibSorteada;
 }
 
+function sorteiaSilabaMix(palavra){
+    let linha, coluna, sibSorteada;
+
+    let pos1 = Math.floor(Math.random() * (palavra.length))
+    let pos2 = Math.floor(Math.random() * (palavra.length))
+    let letra1 = palavra[pos1]
+    let letra2 = palavra[pos2]
+    sibSorteada = `${letra1}${letra2}`
+    if(sibSorteada == null){
+        // caso sorteie oq seria a sílaba "QUU"
+        sorteiaSilaba()
+    }
+
+    return sibSorteada;
+}
+
 function sorteiaPosicao(){ 
     let sort, posx, posy;
 
@@ -66,4 +85,4 @@ function sorteiaPosicao(){
     return [posx, posy]
 }
 
-export { sorteiaPalavra, sorteiaSilaba, sorteiaPosicao };
+export { sorteiaPalavra, sorteiaSilaba, sorteiaPosicao, sorteiaSilabaMix };

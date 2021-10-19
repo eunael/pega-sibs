@@ -100,7 +100,12 @@ function mover(tecla) {
             silabas.resetaSilabas(true)
 
             silabas.constroiPalavra()
-            silabas.constroiSilabas()
+            let opcaoConstr = Math.floor(Math.random() * 2)
+            if(opcaoConstr == 0){
+                silabas.constroiSilabas()
+            } else {
+                silabas.constroiSilabasMix()
+            }
 
             let palavra = silabas.getPalavra()
 
@@ -202,6 +207,8 @@ function desenha(){
         ctx.fillRect(0, 0, plano, plano)
 
         silabas.desenhaSibsPassou(padrao, plano)
+
+        linhas()
 
         bloco.desenhaBloco(frame, padrao, spriteBloco)
 
