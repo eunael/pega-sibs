@@ -3,10 +3,19 @@ import { Silabas } from './components/Silabas.js';
 import { Sprite } from './components/Sprite.js';
 import { GameState } from './utils/estadoJogo.js';
 
-let canvas, ctx, frame=1, plano, padrao, bloco, spriteBloco, silabas,
-comecaJogo, perdeuJogo, ganhouJogo, estadoJogo, dir_img = "../images/dicas/",
+let
+// para configurações do canvas
+canvas, ctx, frame=1,
+// para configurações das dimensões dos elementos do canvas
+plano, padrao,
+// elementos do canvas
+bloco, spriteBloco, silabas,
+// controle dos status do jogo
+comecaJogo, perdeuJogo, ganhouJogo, estadoJogo,
+// tempo de exibição das bolinhas de vida
 tempoMostrvidas = 150;
 
+// monitorar se o usuário está acessando de um dispositivo mobile
 function detectar_mobile() { 
     if( navigator.userAgent.match(/Android/i)
     || navigator.userAgent.match(/webOS/i)
@@ -54,6 +63,57 @@ function setSizePC(){
 // })
 /** */
 
+// reseta a sílabas, mas valida se resta tudo ou apenas uma parte
+function resetJogo(all=false) {
+    if(all) {
+        bloco.resetaBloco(true)
+        silabas.resetaSilabas(true)
+    } else {
+        bloco.resetaBloco()
+        silabas.resetaSilabas()
+    }
+}
+
+// controi os objetos das sílabas que serão mostradas para o jogador
+function constroiSilabasCanvas() {
+    // sorteia a nova palavra
+    silabas.constroiPalavra()
+        
+    // sorteia a forma de apresentação das sílabas aleatórias
+    let opcaoConstr = Math.floor(Math.random() * 2)
+    if(opcaoConstr == 0){
+        silabas.constroiSilabas()
+    } else {
+        silabas.constroiSilabasMix()
+    }
+}
+
+// a imagem no campo da dica
+function setImagem(nome){
+    // configurações da imagem de dica
+    let img = document.getElementById('img-dica'), dir_img = "../images/dicas/";
+
+    img.setAttribute('src', `${dir_img}${nome}`)
+}
+
+// desenhar o círculo que repesentam as vida do catch-catch
+function mostraVidas(){
+    let numVida = bloco.getAtributos().vidas
+    ctx.fillStyle = "#e61515"
+
+    for (let i = 1; i <= numVida; i++) {
+        let paramX = 30 * plano / 600
+        let paramY = 20 * plano / 600
+
+        let x = plano - (paramX*i)
+
+        ctx.beginPath();
+        ctx.arc(x, paramY, 13*padrao/60, 0, 2*Math.PI);
+        ctx.fill()
+    } 
+}
+
+// desenha as linhas para fazer o quadriculado na tela
 function linhas(){
     ctx.strokeStyle="#262626"
     ctx.lineWidth = 1
@@ -73,9 +133,9 @@ function linhas(){
     }
 }
 
+// mover o personagem
 function mover(tecla) {
-    let img = document.getElementById('img-dica');
-
+    // so se move quando estive "jogando"
     if(estadoJogo.getState() == "jogando"){
         if(tecla==38){
             // setinha para CIMA: 38
@@ -94,44 +154,38 @@ function mover(tecla) {
             // letra A: tecla==97 || tecla==65
             bloco.atualizaBloco(-padrao, 0, plano, padrao)
         }
-    } else if(tecla=='click') {
-        if(estadoJogo.getState() == "jogar"){
-            bloco.resetaBloco(true)
-            silabas.resetaSilabas(true)
 
-            silabas.constroiPalavra()
-            let opcaoConstr = Math.floor(Math.random() * 2)
-            if(opcaoConstr == 0){
-                silabas.constroiSilabas()
-            } else {
-                silabas.constroiSilabasMix()
-            }
+    }
+}
 
-            let palavra = silabas.getPalavra()
+// muda o status do jogo com o click na tela
+function mudaStatusJogo(){
+    if(estadoJogo.getState() == "jogar"){
+        resetJogo(true)
 
-            // let img_src = img.getAttribute('src') + palavra.imagem
-            img.setAttribute('src', `${dir_img}${palavra.imagem}`)
-            // img.style.display = 'block'
+        constroiSilabasCanvas()
 
+        let palavra = silabas.getPalavra()
+        
+        setImagem(palavra.imagem);
+        
+        estadoJogo.setState(1)
+
+    } else if (estadoJogo.getState() == "ganhou") {
+        setImagem("vamos-la.png");
+        estadoJogo.setState(0)
+
+    } else if (estadoJogo.getState() == "perdeu") {
+        let numVida = bloco.perderVida()
+
+        if (numVida > 0) {
+            resetJogo()
             estadoJogo.setState(1)
-        } else if (estadoJogo.getState() == "ganhou") {
-            // let img_src_split = img.getAttribute('src').split('/')
-            // let img_src = `${img_src_split[0]}/${img_src_split[1]}/`
-
-            img.setAttribute('src', `${dir_img}vamos-la.png`)
+        } else {
+            setImagem("vamos-la.png");
             estadoJogo.setState(0)
-        } else if (estadoJogo.getState() == "perdeu") {
-            let numVida = bloco.perderVida()
-            if (numVida > 0) {
-                bloco.resetaBloco()
-                silabas.resetaSilabas()
-                estadoJogo.setState(1)
-            } else {
-                img.setAttribute('src', `${dir_img}vamos-la.png`)
-                estadoJogo.setState(0)
-            }
-
         }
+
     }
 }
 
@@ -174,16 +228,7 @@ function desenha(){
         linhas()
 
         if(tempoMostrvidas > 0){
-            let numVida = bloco.getAtributos().vidas
-            ctx.fillStyle = "#e61515"
-            for (let i = 1; i <= numVida; i++) {
-                let paramX = 30 * plano / 600
-                let paramY = 20 * plano / 600
-                let x = plano - (paramX*i)
-                ctx.beginPath();
-                ctx.arc(x, paramY, 13*padrao/60, 0, 2*Math.PI);
-                ctx.fill()
-            } 
+            mostraVidas()
         }
         
         bloco.desenhaBloco(frame, padrao, spriteBloco)
@@ -219,11 +264,15 @@ function desenha(){
         ctx.fillRect((175*plano/600), (475*plano/600), tamX, tamY)
 
         var sizeFont = 28 * plano / 600
-        var frase = `Restam    vidas`
         var numDeVidas = `${bloco.getAtributos().vidas - 1}`
+        var frase = [
+            `Restam    vida.`,
+            `Restam    vida.`,
+            `Restam    vidas`,
+        ]
         ctx.fillStyle = "#ffffff"
         ctx.font = `${sizeFont}px Bouncy-Black`
-        ctx.fillText(frase, (183*plano/600), (517*plano/600))
+        ctx.fillText(frase[numDeVidas], (183*plano/600), (517*plano/600))
         ctx.font = `${sizeFont}px Arial`
         ctx.fillText(numDeVidas, (308*plano/600), (518*plano/600))
     }
@@ -252,8 +301,7 @@ function main() {
     }
     padrao = plano / 10
 
-    let img = document.getElementById('img-dica')
-    img.setAttribute('src', `${dir_img}vamos-la.png`)
+    setImagem("vamos-la.png")
 
     canvas = document.createElement('canvas')
     canvas.setAttribute('id', 'canvas')
@@ -282,7 +330,7 @@ function main() {
         mover(num)
     })
     document.getElementById('canvas').addEventListener('click', function() {
-        mover('click')
+        mudaStatusJogo()
     })
     document.querySelectorAll(['.direcoes']).forEach(element => {
         element.addEventListener('mousedown', function() {

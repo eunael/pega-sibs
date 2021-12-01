@@ -16,6 +16,27 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 
+
+const Sequelize = require('sequelize')
+const sequelize = new Sequelize('catch_catch', 'root', '12345678', {
+    host: 'localhost',
+    dialect: 'mysql',
+})
+
+// models
+const { User } = require('./app/models');
+
+async function connect() {
+  await sequelize.authenticate()
+      .then(() => {
+        console.log('Autenticado com sucesso!');
+      })
+      .catch(() => {
+        console.log('Vish, deu bom não.');
+      })
+}
+connect()
+
 // module.exports = app;
 const port = 3000
 app.listen(port, () => {
