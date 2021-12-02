@@ -80,8 +80,8 @@ function constroiSilabasCanvas() {
     silabas.constroiPalavra()
         
     // sorteia a forma de apresentação das sílabas aleatórias
-    let opcaoConstr = Math.floor(Math.random() * 2)
-    if(opcaoConstr == 0){
+    let opcaoConstr = Math.floor(Math.random() * 4)
+    if(opcaoConstr < 2){
         silabas.constroiSilabas()
     } else {
         silabas.constroiSilabasMix()
