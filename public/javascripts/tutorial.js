@@ -13,7 +13,6 @@ btnNext.addEventListener('click', () => {
             elem.classList.add('d-none')
         }
     })
-    console.log(slides[proxSlide]);
     slides[proxSlide].classList.remove('d-none')
 })
 
@@ -25,6 +24,5 @@ btnPrev.addEventListener('click', () => {
             elem.classList.add('d-none')
         }
     })
-    console.log(slides[anteSlide]);
     slides[anteSlide].classList.remove('d-none')
 })
