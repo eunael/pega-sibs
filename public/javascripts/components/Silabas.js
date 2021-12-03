@@ -1,5 +1,21 @@
 import { sorteiaPalavra, sorteiaSilaba, sorteiaPosicao, sorteiaSilabaMix } from '../utils/silabas.js'
 
+// misturar o array das sílabas
+function shuffle(array) {
+    var m = array.length, t, i;
+  
+    while (m) {
+  
+        i = Math.floor(Math.random() * m--);
+    
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
+    }
+  
+    return array;
+}
+
 export function Silabas(stateGame, canvas){
     let objs_sibs = [],
         sibs_certas = [],
@@ -9,20 +25,14 @@ export function Silabas(stateGame, canvas){
     
     return {
         constroiPalavra: () => {
-            var coord, coord_existe;
             palavra = sorteiaPalavra()
 
             palavra.word.forEach(sib => {
-                do {
-                    coord = sorteiaPosicao()
-                    coord_existe = objs_sibs.some((obj) => obj.x==coord[0] && obj.y==coord[1])
-                } while (coord_existe)
-
                 const objeto = {
                     s: sib,
                     color: "#f2f2f2",
-                    x: coord[0],
-                    y: coord[1],
+                    x: 0,
+                    y: 0,
                     // largSilaba: dimenBloco,
                     // altSilaba: dimenBloco,
                     passou: false,
@@ -34,23 +44,23 @@ export function Silabas(stateGame, canvas){
             });
         },
         constroiSilabas: () => {
-            var silaba, sib_existe=false, coord, coord_existe=false;
+            var silaba, sib_existe=false;
 
             for (var i = 0; i < (numSib + Math.trunc(palavra.word.length / 3)); i++){
                 do {
                     silaba = sorteiaSilaba()
                     sib_existe = objs_sibs.some((obj) => obj.s === silaba || silaba==null)
                 } while(sib_existe)
-                do {
-                    coord = sorteiaPosicao()
-                    coord_existe = objs_sibs.some((obj) => obj.x==coord[0] && obj.y==coord[1])
-                } while (coord_existe)
+                // do {
+                //     coord = sorteiaPosicao()
+                //     coord_existe = objs_sibs.some((obj) => obj.x==coord[0] && obj.y==coord[1])
+                // } while (coord_existe)
 
                 const objeto = {
                     s: silaba,
                     color: "#f2f2f2",
-                    x: coord[0],
-                    y: coord[1],
+                    x: 0,
+                    y: 0,
                     // largSilaba: dimenBloco,
                     // altSilaba: dimenBloco,
                     passou: false,
@@ -62,23 +72,19 @@ export function Silabas(stateGame, canvas){
             }
         },
         constroiSilabasMix: () => {
-            var silaba, sib_existe=false, coord, coord_existe=false;
-            let palav = palavra.word.join("")
+            var silaba, sib_existe=false;
+            var palav = palavra.word.join("")
             for (var i = 0; i < (numSib + Math.trunc(palavra.word.length / 3)); i++){
                 do {
                     silaba = sorteiaSilabaMix(palav)
                     sib_existe = sibs_certas.some((obj) => obj.s === silaba || silaba==null)
                 } while(sib_existe)
-                do {
-                    coord = sorteiaPosicao()
-                    coord_existe = objs_sibs.some((obj) => obj.x==coord[0] && obj.y==coord[1])
-                } while (coord_existe)
 
                 const objeto = {
                     s: silaba,
                     color: "#f2f2f2",
-                    x: coord[0],
-                    y: coord[1],
+                    x: 0,
+                    y: 0,
                     // largSilaba: dimenBloco,
                     // altSilaba: dimenBloco,
                     passou: false,
@@ -88,6 +94,20 @@ export function Silabas(stateGame, canvas){
                 objs_sibs.push(objeto)
                 sibs_aleatorias.push(objeto)
             }
+        },
+        atribuiPosicoes: () => {
+            var copy_sibs = objs_sibs.slice()
+            var sib_mix = shuffle(copy_sibs)
+            var coord, coord_existe=false;
+            sib_mix.forEach(elem => {
+                do {
+                    coord = sorteiaPosicao()
+                    coord_existe = objs_sibs.some((obj) => obj.x==coord[0] && obj.y==coord[1])
+                } while (coord_existe)
+
+                elem.x = coord[0]
+                elem.y = coord[1]
+            })
         },
         atualiza: (blocoX, blocoY, dimenPlano) => {
             objs_sibs.forEach((sib, index) => {
@@ -108,6 +128,7 @@ export function Silabas(stateGame, canvas){
                     }
 
                     if (esta_na_ordem && sib.is_essa) {
+                        // ganhou
                         sib.color = "#37c978"
                         let passou_certas = sibs_certas.every((silaba) => silaba.passou == true)
                         let passou_erradas = sibs_aleatorias.some((silaba) => silaba.passou == true)
@@ -119,6 +140,7 @@ export function Silabas(stateGame, canvas){
                             // document.getElementById('btn-play').style.backgroundColor = "#00966b"
                         }
                     } else {
+                        // perdeu
                         sib.color = "#f45728"
                         setTimeout(function() {
                             stateGame.setState(3)

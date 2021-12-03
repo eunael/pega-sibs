@@ -1,8 +1,8 @@
 const estados = [ 
-    'jogar',
-    'jogando',
-    'ganhou',
-    'perdeu',
+    'jogar', // 0
+    'jogando', // 1
+    'ganhou', // 2
+    'perdeu', // 3
 ];
 
 export function GameState() {

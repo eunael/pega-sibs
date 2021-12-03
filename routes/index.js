@@ -9,10 +9,11 @@ router.get('/catch-catch', function(req, res, next) {
   res.render('index');
 });
 router.get('/tutorial', function(req, res, next) {
-  res.send('Pra fazer ainda. (tutorial)');
+  res.send('Em manutenção. (tutorial)');
+  // res.render('tutorial')
 });
 router.get('/sobre', function(req, res, next) {
-  res.send('Pra fazer ainda. (sobre)');
+  res.send('Em manutenção. (sobre)');
 });
 
 module.exports = router;

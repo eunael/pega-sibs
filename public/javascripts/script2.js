@@ -84,8 +84,11 @@ function constroiSilabasCanvas() {
     if(opcaoConstr < 2){
         silabas.constroiSilabas()
     } else {
-        silabas.constroiSilabasMix()
+        silabas.constroiSilabas()
+        // silabas.constroiSilabasMix()
     }
+
+    silabas.atribuiPosicoes()
 }
 
 // a imagem no campo da dica
@@ -97,8 +100,8 @@ function setImagem(nome){
 }
 
 // desenhar o círculo que repesentam as vida do catch-catch
-function mostraVidas(){
-    let numVida = bloco.getAtributos().vidas
+function mostraVidas(menosUm=false){
+    let numVida = !menosUm ? bloco.getAtributos().vidas : bloco.getAtributos().vidas-1
     ctx.fillStyle = "#e61515"
 
     for (let i = 1; i <= numVida; i++) {
@@ -245,6 +248,7 @@ function desenha(){
         ctx.fillStyle = "#ffffff"
         ctx.font = `${sizeFont}px Bouncy-Black`
         ctx.fillText(frase, (223*plano/600), (517*plano/600))
+        mostraVidas()
 
     } else if (estadoJogo.getState()  == "perdeu") {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -275,6 +279,7 @@ function desenha(){
         ctx.fillText(frase[numDeVidas], (183*plano/600), (517*plano/600))
         ctx.font = `${sizeFont}px Arial`
         ctx.fillText(numDeVidas, (308*plano/600), (518*plano/600))
+        mostraVidas(true)
     }
 }
 
