@@ -21,6 +21,17 @@ img {
   animation: slidein 1.7s normal infinite;
 }
 
+@media (max-width: 576px) {
+  img {
+    max-width: 300px;
+  }
+}
+@media (max-height: 576px) {
+  img {
+    max-width: 190px;
+  }
+}
+
 @keyframes slidein {
   0% { transform: scale(1.0)}
   /* 10% { transform: scale(1.0)}

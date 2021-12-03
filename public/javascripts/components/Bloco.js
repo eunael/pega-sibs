@@ -1,5 +1,5 @@
 export function Bloco(){
-    var x=0, y=0, quadroX=0, quadroY=0, tamanho, vidas=3;
+    var x=0, y=0, quadroX=0, quadroY=0, tamanho, vidas=3, sibsPegas=[];
     return {
         atualizaBloco: (coordX, coordY, dimenPlano, dimenBloco, setPosi=false) => {
             if(setPosi){
@@ -32,9 +32,13 @@ export function Bloco(){
             }
         },
 
+        pegaSib: (objSib) => {
+            sibsPegas.push(objSib)
+        },
+
         getAtributos: () => {
             return {
-                x: x, y: y, quadroX: quadroX, quadroY: quadroY, tamanho: tamanho, vidas: vidas
+                x: x, y: y, quadroX: quadroX, quadroY: quadroY, tamanho: tamanho, vidas: vidas, sibsPegas: sibsPegas
             }
         }
     }

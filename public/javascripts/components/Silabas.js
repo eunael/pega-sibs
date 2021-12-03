@@ -110,19 +110,24 @@ export function Silabas(stateGame, canvas){
             })
         },
         atualiza: (blocoX, blocoY, dimenPlano) => {
-            objs_sibs.forEach((sib, index) => {
+            var sibPassada, cor='success';
+            objs_sibs.forEach(sib => {
                 var esta_na_ordem=true, sib_certa, sib_certa_anterior, index_sib_certa;
-                if(blocoX == (dimenPlano*sib.x/600) && blocoY == (dimenPlano*sib.y/600)){
+                if(blocoX == (dimenPlano*sib.x/600) && blocoY == (dimenPlano*sib.y/600) && sib.passou==false){ // bloco(x;y) = sib(x;y)
                     sib.passou = true
-                    if(sib.is_essa){
+                    sibPassada = sib.s
+                    if(sib.is_essa){ // se for uma sílaba certa
+                        // registra que passou por ela
                         sib_certa = sibs_certas.find(elem => elem.s == sib.s)
                         sib_certa.passou = true
 
+                        // verificar se a sílaba certa anterior foi pega
                         index_sib_certa = sibs_certas.findIndex(elem => elem.s == sib.s)
                         if(index_sib_certa - 1 > -1){
                             sib_certa_anterior = sibs_certas[index_sib_certa-1]
                             if(sib_certa_anterior.passou == false){
                                 esta_na_ordem = false
+                                cor = 'danger'
                             }
                         }
                     }
@@ -141,6 +146,7 @@ export function Silabas(stateGame, canvas){
                         }
                     } else {
                         // perdeu
+                        cor = 'danger'
                         sib.color = "#f45728"
                         setTimeout(function() {
                             stateGame.setState(3)
@@ -150,6 +156,8 @@ export function Silabas(stateGame, canvas){
                     }
                 }
             })
+
+            return [sibPassada, cor];
         },
         desenha: (dimenBloco, dimenPlano) => {
             let ctx = canvas.getContext('2d')

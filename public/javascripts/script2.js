@@ -11,7 +11,7 @@ plano, padrao,
 // elementos do canvas
 bloco, spriteBloco, silabas,
 // controle dos status do jogo
-comecaJogo, perdeuJogo, ganhouJogo, estadoJogo,
+comecaJogo, perdeuJogo, ganhouJogo, estadoJogo, tenteNovamente,
 // tempo de exibição das bolinhas de vida
 tempoMostrvidas = 150;
 
@@ -84,8 +84,7 @@ function constroiSilabasCanvas() {
     if(opcaoConstr < 2){
         silabas.constroiSilabas()
     } else {
-        silabas.constroiSilabas()
-        // silabas.constroiSilabasMix()
+        silabas.constroiSilabasMix()
     }
 
     silabas.atribuiPosicoes()
@@ -136,6 +135,18 @@ function linhas(){
     }
 }
 
+// mostrar as sílabas que foram pegas
+function showSibsCacth(silaba=null, cor=null){
+    var divShowSib = document.getElementById("show-sibs-catch")
+    if(silaba && cor){
+        var htmlSpanSib = `<span class="badge bg-${cor} me-1 fs-6">${silaba.toUpperCase()}</span>`
+        divShowSib.innerHTML += htmlSpanSib
+        return
+    }
+    divShowSib.innerHTML = ""
+    
+}
+
 // mover o personagem
 function mover(tecla) {
     // so se move quando estive "jogando"
@@ -177,10 +188,12 @@ function mudaStatusJogo(){
     } else if (estadoJogo.getState() == "ganhou") {
         setImagem("vamos-la.png");
         estadoJogo.setState(0)
+        showSibsCacth()
 
     } else if (estadoJogo.getState() == "perdeu") {
         let numVida = bloco.perderVida()
-
+        showSibsCacth()
+        
         if (numVida > 0) {
             resetJogo()
             estadoJogo.setState(1)
@@ -195,8 +208,13 @@ function mudaStatusJogo(){
 function atualiza(){
     if(estadoJogo.getState() == "jogando"){
         frame++;
-        let infoBloco = bloco.getAtributos()
-        silabas.atualiza(infoBloco.x, infoBloco.y, plano)
+        var infoBloco = bloco.getAtributos()
+        var objSib = silabas.atualiza(infoBloco.x, infoBloco.y, plano)
+
+        if (objSib[0]) { // se alguma sílaba foi pega
+            showSibsCacth(objSib[0], objSib[1])
+        }
+
         if (tempoMostrvidas > 0) {
             tempoMostrvidas--;
         }
@@ -261,7 +279,14 @@ function desenha(){
 
         bloco.desenhaBloco(frame, padrao, spriteBloco)
 
-        perdeuJogo.desenha((406*plano/600)/4, (300*plano/600)/2, plano)
+        let numVida = bloco.getAtributos().vidas - 1
+
+        if (numVida > 0) {
+            tenteNovamente.desenha((406*plano/600)/4, (300*plano/600)/2, plano)
+        } else {
+            perdeuJogo.desenha((406*plano/600)/4, (300*plano/600)/2, plano)
+        }
+
 
         ctx.fillStyle = "#008D1F"
         let tamX = (250)*plano/600, tamY = (70)*plano/600;
@@ -321,9 +346,10 @@ function main() {
     silabas = new Silabas(estadoJogo, canvas)
 
     // Sprites
-    comecaJogo = new Sprite(canvas, 20, 650, 406, 300);
-    perdeuJogo = new Sprite(canvas, 447, 650, 406, 300);
-    ganhouJogo = new Sprite(canvas,874, 650, 406, 300);
+    comecaJogo = new Sprite(canvas, 20, 130, 406, 300);
+    perdeuJogo = new Sprite(canvas, 447, 130, 406, 300);
+    ganhouJogo = new Sprite(canvas,874, 130, 406, 300);
+    tenteNovamente = new Sprite(canvas,1301, 130, 406, 300);
     spriteBloco = new Sprite(canvas, 620, 0, 60, 60)
 
     estadoJogo.setState(0)
