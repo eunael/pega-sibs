@@ -9,8 +9,7 @@ router.get('/catch-catch', function(req, res, next) {
   res.render('index');
 });
 router.get('/tutorial', function(req, res, next) {
-  res.send('Em manutenção. (tutorial)');
-  // res.render('tutorial')
+  res.render('tutorial')
 });
 router.get('/sobre', function(req, res, next) {
   res.send('Em manutenção. (sobre)');
