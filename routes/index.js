@@ -12,7 +12,8 @@ router.get('/tutorial', function(req, res, next) {
   res.render('tutorial')
 });
 router.get('/sobre', function(req, res, next) {
-  res.send('Em manutenção. (sobre)');
+  // res.send('Em manutenção. (sobre)');
+  res.render('sobre')
 });
 
 module.exports = router;
