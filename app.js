@@ -1,6 +1,8 @@
 var express = require('express');
+var session = require('express-session')
 var path = require('path');
 var logger = require('morgan');
+var bodyParser =  require('body-parser')
 
 var indexRouter = require('./routes/index');
 
@@ -13,6 +15,10 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(session({secret: "G@rn3t"}))
+app.use(bodyParser.urlencoded({extended:true}))
+
 
 app.use('/', indexRouter);
 
@@ -37,9 +43,9 @@ app.use('/', indexRouter);
 // }
 // connect()
 
-// const port = process.env.PORT || 3000;
-// app.listen(port, () => {
-//   console.log(`Example app listening at http://localhost:${port}`)
-// })
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
 
 module.exports = app;

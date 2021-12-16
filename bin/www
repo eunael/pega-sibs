@@ -9,6 +9,36 @@ var debug = require('debug')('pega-sibs:server');
 var http = require('http');
 
 /**
+ * Conectando-se ao banco de dados mysql
+ */
+
+ const Sequelize = require('sequelize')
+ const user = process.env.MYSQL_USER || 'root';
+ const password = process.env.MYSQL_PASSWORD || '12345678';
+ const database = process.env.MYSQL_DATABASE || 'catch_catch';
+ const host = process.env.MYSQL_HOST || 'localhost';
+ const portDB = process.env.MYSQL_PORT || 3306;
+ 
+ const sequelize = new Sequelize(database, user, password, {
+     host: host,
+     dialect: 'mysql',
+ })
+ 
+ // models
+ // const { User } = require('./app/models');
+ 
+ async function connect() {
+   await sequelize.authenticate()
+       .then(() => {
+         console.log('Autenticado com sucesso!');
+       })
+       .catch(() => {
+         console.log('Vish, deu bom não.');
+       })
+ }
+ connect()
+
+/**
  * Get port from environment and store in Express.
  */
 
