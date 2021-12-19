@@ -1,0 +1,298 @@
+doctype html
+html(lang="pt-br")
+  head
+    title Catch-catch
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible",content="IE=edge")
+    meta(name="viewport",content="width=device-width, initial-scale=1.0")
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css",rel="stylesheet",integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC",crossorigin="anonymous")
+    link(rel="shortcut icon", type="image/x-icon", href="../../images/fav-bloco.svg")
+  body(class="bg-warning" style="padding: 0px;")
+    section(class="container d-flex justify-content-center")
+      div(class="card p-3 w-75 m-5")
+        form
+          div(class="mb-3")
+            label(for="selecimg", class="form-label") Selecione uma imagem
+            input(type="file", name="selecimg", class="form-control", id="selecimg")
+          
+          div(class="mb-3")
+            label(for="", class="form-label") Sílabas
+            div(class="d-flex")
+              div(class="d-flex", id="div-selects")
+                select(class="form-select me-1", aria-label="Default select example", id="select-base")
+                  option(selected) --
+
+                  optgroup(label="Letra B")
+                    option(value="") BA
+                    option(value="") BE
+                    option(value="") BI
+                    option(value="") BO
+                    option(value="") BU
+              
+                  optgroup(label="Letra C")
+                    option(value="") CA
+                    option(value="") CE
+                    option(value="") CI
+                    option(value="") CO
+                    option(value="") CU
+
+                  optgroup(label="Letra D")
+                    option(value="") DA
+                    option(value="") DE
+                    option(value="") DI
+                    option(value="") DO
+                    option(value="") DU
+
+                  optgroup(label="Letra F")
+                    option(value="") FA
+                    option(value="") FE
+                    option(value="") FI
+                    option(value="") FO
+                    option(value="") FU
+                  
+                  optgroup(label="Letra G")
+                    option(value="") GA
+                    option(value="") GE
+                    option(value="") GI
+                    option(value="") GO
+                    option(value="") GU
+                  
+                  optgroup(label="Letra H")
+                    option(value="") HA
+                    option(value="") HE
+                    option(value="") HI
+                    option(value="") HO
+                    option(value="") HU
+                  
+                  optgroup(label="Letra J")
+                    option(value="") JA
+                    option(value="") JE
+                    option(value="") JI
+                    option(value="") JO
+                    option(value="") JU
+                  
+                  optgroup(label="Letra K")
+                    option(value="") KA
+                    option(value="") KE
+                    option(value="") KI
+                    option(value="") KO
+                    option(value="") KU
+                  
+                  optgroup(label="Letra L")
+                    option(value="") LA
+                    option(value="") LE
+                    option(value="") LI
+                    option(value="") LO
+                    option(value="") LU
+                  
+                  optgroup(label="Letra M")
+                    option(value="") MA
+                    option(value="") ME
+                    option(value="") MI
+                    option(value="") MO
+                    option(value="") MU
+                  
+                  optgroup(label="Letra N")
+                    option(value="") NA
+                    option(value="") NE
+                    option(value="") NI
+                    option(value="") NO
+                    option(value="") NU
+                  
+                  optgroup(label="Letra P")
+                    option(value="") PA
+                    option(value="") PE
+                    option(value="") PI
+                    option(value="") PO
+                    option(value="") PU
+                  
+                  optgroup(label="Letra Q")
+                    option(value="") QUA
+                    option(value="") QUE
+                    option(value="") QUI
+                    option(value="") QUO
+                  
+                  optgroup(label="Letra R")
+                    option(value="") RA
+                    option(value="") RE
+                    option(value="") RI
+                    option(value="") RO
+                    option(value="") RU
+                  
+                  optgroup(label="Letra S")
+                    option(value="") SA
+                    option(value="") SE
+                    option(value="") SI
+                    option(value="") SO
+                    option(value="") SU
+                  
+                  optgroup(label="Letra T")
+                    option(value="") TA
+                    option(value="") TE
+                    option(value="") TI
+                    option(value="") TO
+                    option(value="") TU
+                  
+                  optgroup(label="Letra V")
+                    option(value="") VA
+                    option(value="") VE
+                    option(value="") VI
+                    option(value="") VO
+                    option(value="") VU
+                  
+                  optgroup(label="Letra X")
+                    option(value="") XA
+                    option(value="") XE
+                    option(value="") XI
+                    option(value="") XO
+                    option(value="") XU
+                  
+                  optgroup(label="Letra Z")
+                    option(value="") ZA
+                    option(value="") ZE
+                    option(value="") ZI
+                    option(value="") ZO
+                    option(value="") ZU
+              
+                select(class="form-select me-1", aria-label="Default select example")
+                  option(selected) --
+
+                  optgroup(label="Letra B")
+                    option(value="") BA
+                    option(value="") BE
+                    option(value="") BI
+                    option(value="") BO
+                    option(value="") BU
+              
+                  optgroup(label="Letra C")
+                    option(value="") CA
+                    option(value="") CE
+                    option(value="") CI
+                    option(value="") CO
+                    option(value="") CU
+
+                  optgroup(label="Letra D")
+                    option(value="") DA
+                    option(value="") DE
+                    option(value="") DI
+                    option(value="") DO
+                    option(value="") DU
+
+                  optgroup(label="Letra F")
+                    option(value="") FA
+                    option(value="") FE
+                    option(value="") FI
+                    option(value="") FO
+                    option(value="") FU
+                  
+                  optgroup(label="Letra G")
+                    option(value="") GA
+                    option(value="") GE
+                    option(value="") GI
+                    option(value="") GO
+                    option(value="") GU
+                  
+                  optgroup(label="Letra H")
+                    option(value="") HA
+                    option(value="") HE
+                    option(value="") HI
+                    option(value="") HO
+                    option(value="") HU
+                  
+                  optgroup(label="Letra J")
+                    option(value="") JA
+                    option(value="") JE
+                    option(value="") JI
+                    option(value="") JO
+                    option(value="") JU
+                  
+                  optgroup(label="Letra K")
+                    option(value="") KA
+                    option(value="") KE
+                    option(value="") KI
+                    option(value="") KO
+                    option(value="") KU
+                  
+                  optgroup(label="Letra L")
+                    option(value="") LA
+                    option(value="") LE
+                    option(value="") LI
+                    option(value="") LO
+                    option(value="") LU
+                  
+                  optgroup(label="Letra M")
+                    option(value="") MA
+                    option(value="") ME
+                    option(value="") MI
+                    option(value="") MO
+                    option(value="") MU
+                  
+                  optgroup(label="Letra N")
+                    option(value="") NA
+                    option(value="") NE
+                    option(value="") NI
+                    option(value="") NO
+                    option(value="") NU
+                  
+                  optgroup(label="Letra P")
+                    option(value="") PA
+                    option(value="") PE
+                    option(value="") PI
+                    option(value="") PO
+                    option(value="") PU
+                  
+                  optgroup(label="Letra Q")
+                    option(value="") QUA
+                    option(value="") QUE
+                    option(value="") QUI
+                    option(value="") QUO
+                  
+                  optgroup(label="Letra R")
+                    option(value="") RA
+                    option(value="") RE
+                    option(value="") RI
+                    option(value="") RO
+                    option(value="") RU
+                  
+                  optgroup(label="Letra S")
+                    option(value="") SA
+                    option(value="") SE
+                    option(value="") SI
+                    option(value="") SO
+                    option(value="") SU
+                  
+                  optgroup(label="Letra T")
+                    option(value="") TA
+                    option(value="") TE
+                    option(value="") TI
+                    option(value="") TO
+                    option(value="") TU
+                  
+                  optgroup(label="Letra V")
+                    option(value="") VA
+                    option(value="") VE
+                    option(value="") VI
+                    option(value="") VO
+                    option(value="") VU
+                  
+                  optgroup(label="Letra X")
+                    option(value="") XA
+                    option(value="") XE
+                    option(value="") XI
+                    option(value="") XO
+                    option(value="") XU
+                  
+                  optgroup(label="Letra Z")
+                    option(value="") ZA
+                    option(value="") ZE
+                    option(value="") ZI
+                    option(value="") ZO
+                    option(value="") ZU
+              div 
+                button(type="button", class="btn btn-success", add-select) +      
+            div(class="mt-4")
+              a(href="/admin/palavras")
+                button(type="button", class="btn btn-primary") Salvar
+    
+    script(src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js",integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p",crossorigin="anonymous")
+    script(src="../../javascripts/admincreate.js")

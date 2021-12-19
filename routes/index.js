@@ -15,5 +15,14 @@ router.get('/sobre', function(req, res, next) {
   // res.send('Em manutenção. (sobre)');
   res.render('sobre')
 });
+router.get('/login', function(req, res, next){
+  res.render('administracao/login')
+})
+router.get('/admin/palavras', function(req, res, next){
+  res.render('administracao/index')
+})
+router.get('/admin/palavras/nova', function(req, res, next){
+  res.render('administracao/create')
+})
 
 module.exports = router;

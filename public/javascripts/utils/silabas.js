@@ -1,10 +1,11 @@
 // import '../dados/palavras.json'
 const palavras = [
     {'imagem': "img-dica-bala.png", 'word': ['BA', 'LA']},
-    {'imagem': "img-dica-mala.png", 'word': ['MA', 'LA']},
     {'imagem': "img-dica-bolo.png", 'word': ['BO', 'LO']},
+    {'imagem': "img-dica-mala.png", 'word': ['MA', 'LA']},
     {'imagem': "img-dica-boneca.png", 'word': ['BO', 'NE', 'CA']},
     {'imagem': "img-dica-janela.png", 'word': ['JA', 'NE', 'LA']},
+    {'imagem': "img-dica-pipoca.png", 'word': ['PI', 'PO', 'CA']},
     {'imagem': "img-dica-sapato.png", 'word': ['SA', 'PA', 'TO']},
     {'imagem': "img-dica-capacete.png", 'word': ['CA', 'PA', 'CE', 'TE']},
     {'imagem': "img-dica-telefone.png", 'word': ['TE', 'LE', 'FO', 'NE']},
