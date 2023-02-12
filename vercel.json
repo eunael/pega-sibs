@@ -1,6 +1,6 @@
 {
     "name": "catch-catch-game",
-    "vesion": 2,
+    "version": 2,
     "public": true,
     "build": {
         "src": "bin/www",
