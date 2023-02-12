@@ -1,0 +1,15 @@
+{
+    "name": "catch-catch-game",
+    "vesion": 2,
+    "public": true,
+    "build": {
+        "src": "bin/www",
+        "use": "@vercel/node"
+    },
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "bin/www"
+        }
+    ]
+}
