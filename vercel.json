@@ -1,0 +1,15 @@
+{
+    "name": "catch-catch-game",
+    "version": 2,
+    "public": true,
+    "build": {
+        "src": "./app/index.js",
+        "use": "@vercel/node"
+    },
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "./app/index.js"
+        }
+    ]
+}
