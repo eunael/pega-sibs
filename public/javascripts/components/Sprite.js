@@ -1,6 +1,6 @@
 export function Sprite(canvas, imgX, imgY, imgLargura, imgAltura){
     const img = new Image();
-    img.src = window.location.origin + "/src/images/folha.png"
+    img.src = window.location.origin + "/images/folha.png"
     
     const nsb=14; // número de sprites do bloco
     var ctx = canvas.getContext('2d'),

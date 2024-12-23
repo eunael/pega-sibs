@@ -79,7 +79,7 @@ function constroiSilabasCanvas() {
 // a imagem no campo da dica
 function setImagem(nome){
     // configurações da imagem de dica
-    let img = document.getElementById('img-dica'), dir_img = window.location.origin + "/src/images/dicas/";
+    let img = document.getElementById('img-dica'), dir_img = window.location.origin + "/images/dicas/";
 
     img.setAttribute('src', `${dir_img}${nome}`)
 }

@@ -23,5 +23,13 @@ Promover a prática do conhecimento propiciado pela leitura, por meio da junçã
 - Git e GitHub
 - Vercel
 
-Link de demostração:
+## Link de demostração
 https://catch-catch-game.vercel.app/
+
+## Executar projeto localmente
+
+Primeiro, clone o repositório e depois execute:
+```
+npm install
+node start
+```
